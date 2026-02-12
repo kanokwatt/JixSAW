@@ -8,4 +8,8 @@ pillow
 
 # Visualization & Networking
 matplotlib
+<<<<<<< HEAD
 requests
+=======
+requests
+>>>>>>> b35080aba31438130602bb72e6a03bd4f74e5b69
