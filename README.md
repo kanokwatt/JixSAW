@@ -29,7 +29,7 @@
 | ลำดับ | รายชื่อสมาชิก | บทบาทและความรับผิดชอบ (Role) |
 | :---: | :--- | :--- |
 | 1 | [กนกวรรธน์ เซี่ยงเจ็น] | **Project Leader & AI Strategy** |
-| 2 | [ชื่อ-นามสกุล] | **Data Scientist & ML Engineer** |
+| 2 | [นายบูม จอมขยันทำให้พัง] | **Data Scientist & ML Engineer** |
 | 3 | [ชื่อ-นามสกุล] | **Backend Developer & Data Engineer** |
 | 4 | [ชื่อ-นามสกุล] | **Frontend Developer & UI/UX Designer** |
 | 5 | [ชื่อ-นามสกุล] | **System Analyst & Clinical Coordinator** |
