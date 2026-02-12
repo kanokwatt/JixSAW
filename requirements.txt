@@ -1,0 +1,11 @@
+# Core AI & Deep Learning
+torch
+transformers
+huggingface_hub
+
+# Image Processing
+pillow
+
+# Visualization & Networking
+matplotlib
+requests
