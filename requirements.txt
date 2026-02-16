@@ -8,6 +8,7 @@ pillow
 
 # Visualization & Networking
 matplotlib
+seaborn
 <<<<<<< HEAD
 requests
 =======
