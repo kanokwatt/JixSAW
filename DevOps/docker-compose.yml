@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  backend-api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ai-service
+      - db
+
+  ai-service:
+    build: ./ai_module
+    volumes:
+      - ./model_weights:/app/weights
+
+  frontend-ui:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
+  db:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

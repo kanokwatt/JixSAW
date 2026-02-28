@@ -1,0 +1,63 @@
+# JIxSAW Project Rules & Guidelines
+
+# ---------------------------------------------------
+# PART 1: AI Privacy & Security Rules (Strict Enforcement)
+# ---------------------------------------------------
+
+## NEVER Read or Analyze
+- NEVER read .env files (.env, .env.local, .env.production, etc.)
+- NEVER read files containing secrets, API keys, or passwords
+- NEVER read files with names like: secrets, private, keys, config
+- NEVER read database connection strings or credentials
+
+## NEVER Suggest or Expose
+- NEVER suggest committing secrets to git
+- NEVER suggest exposing secrets in client-side code
+- NEVER suggest logging secrets or environment variables
+- NEVER suggest hardcoding secrets in code
+
+## ALWAYS Use Placeholders
+- ALWAYS use placeholder values like: DATABASE_URL="mysql://user:pass@localhost/db"
+- ALWAYS use placeholder keys like: STRIPE_SECRET_KEY="sk_live_..."
+- ALWAYS use placeholder secrets like: AUTH_SECRET="your-secret-here"
+
+## File Exclusions
+- Exclude all .env* files from AI context
+- Exclude files in /secrets, /private, /config directories
+- Exclude files with extensions: .key, .pem, .p12
+
+## Code Review Rules
+- Flag any hardcoded secrets in code reviews
+- Suggest using environment variables instead of hardcoding
+- Remind about .gitignore for sensitive files
+
+## Privacy First
+- User privacy and security comes first
+- When in doubt, ask user before accessing sensitive files
+- Never assume it's safe to read configuration files
+
+# ---------------------------------------------------
+# PART 2: Project Context & Tech Stack (JIxSAW Health)
+# ---------------------------------------------------
+
+## Project Description
+- Name: JIxSAW Health (Bladder Cancer AI Staging)
+- Goal: Web App for doctors to upload X-ray/CT scans and get AI-based cancer staging (T1-T4).
+- Architecture: Modular Monolith / Microservices (Frontend, Backend, AI Engine).
+
+## Tech Stack Standards
+- **Frontend:** Next.js (React), Tailwind CSS (Medical Blue/White theme), Axios.
+- **Backend:** FastAPI (Python), Pydantic for validation, Python-multipart for file upload.
+- **AI Core:** PyTorch, Vision Transformer (ViT), Grad-CAM (for explainability).
+- **Infrastructure:** Docker, Docker Compose.
+
+## Role-Based Coding Instructions
+- **If working on AI (Role 1):** Focus on model inference speed, DICOM preprocessing, and outputting JSON with confidence scores.
+- **If working on Backend (Role 2):** Focus on Secure API endpoints, JWT Authentication, and separating logic into routers.
+- **If working on Frontend (Role 3):** Focus on Clean UI, UX for doctors, Loading states during AI processing, and Error handling.
+- **If working on DevOps (Role 4):** Focus on Dockerfile optimization, .dockerignore, and environment configuration.
+
+## Medical & Ethical Guardrails
+- **Disclaimer:** All UI and Text responses must imply this is a "Screening Tool" ONLY, not a final diagnosis.
+- **Anonymization:** Always suggest stripping Patient Names/IDs from image filenames before processing.
+- **No Hallucination:** If the AI model is unsure, the system must return "Indeterminate" rather than guessing a stage.
