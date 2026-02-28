@@ -1,0 +1,7 @@
+/* Deprecated/placeholder file.
+	Tailwind directives are included in `src/styles/globals.css`.
+	If you prefer a separate entrypoint for Tailwind, move the
+	`@tailwind` directives here and import this file from `layout.tsx`.
+*/
+
+/* Removed invalid imports to avoid build warnings. */
