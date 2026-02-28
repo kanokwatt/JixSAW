@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { DashboardWrapper } from './pages/DashboardWrapper';
 import { MRIUpload } from './pages/MRIUpload';

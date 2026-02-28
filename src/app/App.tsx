@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router";
+import { RouterProvider } from "react-router-dom";
 import { router } from "./routes";
 import { UserProvider } from "./context/UserContext";
 import { SidebarProvider } from "./context/SidebarContext";
