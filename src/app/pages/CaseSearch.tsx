@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, User, Calendar, ThumbsUp, ThumbsDown, MessageSquare, Eye, FileText } from 'lucide-react';
-import { Link } from 'react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 const mockCases = [
   {
@@ -187,7 +188,7 @@ export function CaseSearch() {
                     </span>
                   </div>
                   <Link
-                    to={`/patient-review?id=${caseItem.id}`}
+                    href={`/patient-review?id=${caseItem.id}`}
                     className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-emerald-500 text-white rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all duration-200 font-semibold"
                   >
                     <Eye className="w-4 h-4" />

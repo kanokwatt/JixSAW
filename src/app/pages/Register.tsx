@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Activity, User, Mail, Globe, Stethoscope, Heart } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import Link from 'next/link';
 
 export function Register() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { setUser } = useUser();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,7 +36,7 @@ export function Register() {
     });
 
     // นำไปหน้า Dashboard ตาม role
-    navigate('/');
+    router.push('/');
   };
 
   return (
@@ -194,7 +195,7 @@ export function Register() {
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground font-medium">
                 มีบัญชีอยู่แล้ว?{' '}
-                <Link to="/login" className="text-primary hover:underline font-semibold">
+                <Link href="/login" className="text-primary hover:underline font-semibold">
                   เข้าสู่ระบบ
                 </Link>
               </p>

@@ -1,10 +1,13 @@
+"use client";
+
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Activity, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import Link from 'next/link';
 
 export function Login() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { setUser } = useUser();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +32,7 @@ export function Login() {
       });
 
       setIsLoading(false);
-      navigate('/');
+      router.push('/');
     }, 1000);
   };
 
@@ -183,7 +186,7 @@ export function Login() {
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground font-medium">
                 ยังไม่มีบัญชี?{' '}
-                <Link to="/register" className="text-primary hover:underline font-semibold">
+                <Link href="/register" className="text-primary hover:underline font-semibold">
                   ลงทะเบียน
                 </Link>
               </p>

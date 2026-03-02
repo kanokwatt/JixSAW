@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Search, Calendar, TrendingUp, TrendingDown, Minus, User, FileText, Activity, ZoomIn, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -132,8 +132,8 @@ const mockScans: MRIScan[] = [
 ];
 
 export function PatientReview() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const patientId = searchParams.get('id') || 'PT-001';
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -186,7 +186,7 @@ export function PatientReview() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => router.push('/')}
             className="p-2.5 hover:bg-accent rounded-xl transition-colors"
           >
             <ArrowLeft className="w-6 h-6" />
@@ -201,7 +201,7 @@ export function PatientReview() {
           </div>
         </div>
         <button
-          onClick={() => navigate('/case-search')}
+          onClick={() => router.push('/case-search')}
           className="px-5 py-2.5 bg-card border-2 border-border rounded-xl hover:bg-accent transition-colors font-semibold"
         >
           Back to Cases
