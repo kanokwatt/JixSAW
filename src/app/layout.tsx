@@ -1,7 +1,7 @@
 import "../styles/index.css"; // เรียกใช้ Tailwind ตรงนี้
 
 export const metadata = {
-  title: "JIxSAW Plus",
+  title: "JIxSAW Health",
   description: "Next.js Application",
 };
 
