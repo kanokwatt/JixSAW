@@ -182,7 +182,7 @@ export function PatientReviewNew() {
 
               <div className="relative aspect-square bg-black rounded-2xl overflow-hidden shadow-xl">
                 <img
-                  src={image_f2d3b023094edbc47e88e3c458a6c416d3d094eb}
+                  src={image_f2d3b023094edbc47e88e3c458a6c416d3d094eb.src}
                   alt={`MRI Scan ${mockScans[selectedScans[0]].date}`}
                   className="w-full h-full object-cover"
                 />
@@ -260,7 +260,7 @@ export function PatientReviewNew() {
 
               <div className="relative aspect-square bg-black rounded-2xl overflow-hidden shadow-xl">
                 <img
-                  src={image_421a1d099a68f9707d70bc24e409c9b0cc291fff}
+                  src={image_421a1d099a68f9707d70bc24e409c9b0cc291fff.src}
                   alt={`MRI Scan ${mockScans[selectedScans[1]].date}`}
                   className="w-full h-full object-cover"
                 />
@@ -383,7 +383,7 @@ export function PatientReviewNew() {
             >
               <div className="relative aspect-square bg-black rounded-lg overflow-hidden mb-3">
                 <img
-                  src={image_59b667750b1988c0a6273c07ef14c39f97f305ea}
+                  src={image_59b667750b1988c0a6273c07ef14c39f97f305ea.src}
                   alt={`Scan ${scan.date}`}
                   className="w-full h-full object-cover"
                 />
