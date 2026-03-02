@@ -1,5 +1,5 @@
 import { Users, FileCheck, Clock, Search, TrendingUp, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const mockStats = {
   totalPatients: 156,

@@ -1,5 +1,5 @@
 import { MessageCircle, Calendar, FileText, Activity, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 export function DashboardPatient() {
