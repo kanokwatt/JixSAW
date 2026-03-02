@@ -1,23 +1,20 @@
-# syntax=docker/dockerfile:1
+# ใช้ Node.js version 18 (หรือ 20) แบบ alpine เพื่อให้ไฟล์มีขนาดเล็ก
+FROM node:18-alpine
 
-FROM node:18-alpine AS base
+# ตั้งค่า Directory หลักใน Container
 WORKDIR /app
 
-FROM base AS deps
-COPY package.json package-lock.json ./
-RUN npm ci
+# คัดลอกไฟล์ package.json และ package-lock.json เข้าไปก่อน
+COPY package*.json ./
 
-FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
+# ติดตั้ง Dependencies
+RUN npm install
+
+# คัดลอกไฟล์ทั้งหมดในโปรเจกต์เข้าไป
 COPY . .
-RUN npm run build
 
-FROM base AS runner
-ENV NODE_ENV=production
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
+# เปิด Port 3000
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+
+# รันคำสั่ง dev (อ้างอิงจาก package.json ที่เราแก้เป็น next dev -H 0.0.0.0 -p 3000)
+CMD ["npm", "run", "dev"]

@@ -1,10 +1,17 @@
+version: '3.8'
+
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
+    container_name: jixsaw-next-web
     ports:
       - "3000:3000"
+    volumes:
+      # Map โค้ดจากเครื่องเรา (Host) เข้าไปใน /app ของ Container
+      - .:/app
+      # ป้องกันไม่ให้ node_modules ในเครื่องเราไปทับใน Container
+      - /app/node_modules
+      # ป้องกันโฟลเดอร์ .next (ไฟล์ Build ของ Next.js) ตีกัน
+      - /app/.next
     environment:
-      - NODE_ENV=production
-    restart: unless-stopped
+      - NODE_ENV=development
