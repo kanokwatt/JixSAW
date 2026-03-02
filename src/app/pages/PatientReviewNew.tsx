@@ -3,7 +3,7 @@ import image_421a1d099a68f9707d70bc24e409c9b0cc291fff from 'figma:asset/421a1d09
 import image_f2d3b023094edbc47e88e3c458a6c416d3d094eb from 'figma:asset/f2d3b023094edbc47e88e3c458a6c416d3d094eb.png'
 import { useState, useRef } from 'react';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, User } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface MRIScan {
   id: number;
