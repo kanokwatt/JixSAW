@@ -1,4 +1,6 @@
 import "../styles/index.css"; // เรียกใช้ Tailwind ตรงนี้
+import { UserProvider } from "src/app/context/UserContext.tsx"; 
+import { SidebarProvider } from "src/app/context/SidebarContext.tsx";
 
 export const metadata = {
   title: "JIxSAW Health",
@@ -12,7 +14,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <UserProvider>
+          <SidebarProvider>
+            <UserProvider>
+              {children}
+            </UserProvider>
+          </SidebarProvider>
+        </UserProvider>
+      </body>
     </html>
   );
 }
