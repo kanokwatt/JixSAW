@@ -1,8 +1,8 @@
 import "../styles/index.css"; // เรียกใช้ Tailwind ตรงนี้
 
 export const metadata = {
-  title: "My Project",
-  description: "Created with Next.js",
+  title: "JIxSAW Plus",
+  description: "Next.js Application",
 };
 
 export default function RootLayout({
