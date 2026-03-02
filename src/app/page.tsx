@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Activity, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useUser } from 'src/app/context/UserContext';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // สำคัญมาก! ป้องกันไม่ให้หน้าเว็บรีเฟรชตัวเองตอนกด Submit
     setIsLoading(true);
 
     // Mock login - ในระบบจริงจะเชื่อมกับ API
@@ -23,13 +23,19 @@ export default function Login() {
       // สมมติว่าเป็นแพทย์ถ้า email มี "doctor" หรือ "dr"
       const isDoctor = email.toLowerCase().includes('doctor') || email.toLowerCase().includes('dr');
       
-      setUser({
-        firstName: isDoctor ? 'Siriwan' : 'สมชาย',
-        lastName: isDoctor ? 'Prateep' : 'ใจดี',
-        email: email,
-        role: isDoctor ? 'doctor' : 'patient',
-        country: 'Thailand'
-      });
+      if (isDoctor) {
+        router.push('/dashboard'); // เปลี่ยนเป็นหน้าสำหรับแพทย์
+      } else {
+        router.push('/patient-dashboard'); // เปลี่ยนเป็นหน้าสำหรับผู้ป่วย
+      }
+      
+      // setUser({
+      //   firstName: isDoctor ? 'Siriwan' : 'สมชาย',
+      //   lastName: isDoctor ? 'Prateep' : 'ใจดี',
+      //   email: email,
+      //   role: isDoctor ? 'doctor' : 'patient',
+      //   country: 'Thailand'
+      // });
 
       setIsLoading(false);
       router.push('/');

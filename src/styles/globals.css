@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+  /* กำหนดสีให้เข้ากับ JIxSAW Health (โทนเขียวมรกต) */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(222.2 84% 4.9%);
+  
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(222.2 84% 4.9%);
+  
+  --color-primary: hsl(142.1 76.2% 36.3%); /* สีเขียวหลัก */
+  --color-primary-foreground: hsl(355.7 100% 97.3%);
+  
+  --color-muted: hsl(210 40% 96.1%);
+  --color-muted-foreground: hsl(215.4 16.3% 46.9%);
+  
+  --color-accent: hsl(210 40% 96.1%);
+  --color-accent-foreground: hsl(222.2 84% 4.9%);
+  
+  --color-border: hsl(214.3 31.8% 91.4%);
+}
+
 :root {
   --bg: #ffffff;
   --fg: #0f172a;
