@@ -1,9 +1,10 @@
+"use client"; //
 import image_59b667750b1988c0a6273c07ef14c39f97f305ea from 'src/assets/59b667750b1988c0a6273c07ef14c39f97f305ea.png'
 import image_421a1d099a68f9707d70bc24e409c9b0cc291fff from 'src/assets/421a1d099a68f9707d70bc24e409c9b0cc291fff.png'
 import image_f2d3b023094edbc47e88e3c458a6c416d3d094eb from 'src/assets/f2d3b023094edbc47e88e3c458a6c416d3d094eb.png'
 import { useState, useRef } from 'react';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, User } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface MRIScan {
   id: number;
@@ -61,9 +62,11 @@ const mockScans: MRIScan[] = [
   },
 ];
 
-export function PatientReviewNew() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+// เวลาจะเปลี่ยนหน้า ใช้ router.push('/path-name') แทน navigate('/path-name')
+
+export default function PatientReviewNew() {
+  const router = useRouter(); 
+  const searchParams = useSearchParams();
   const patientId = searchParams.get('id') || 'PT-001';
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -113,7 +116,7 @@ export function PatientReviewNew() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate('/case-search')}
+            onClick={() => router.push('/case-search')}
             className="p-2 hover:bg-accent rounded-xl transition-colors"
           >
             <ArrowLeft className="w-6 h-6" />
