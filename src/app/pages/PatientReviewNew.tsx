@@ -1,6 +1,6 @@
-import image_59b667750b1988c0a6273c07ef14c39f97f305ea from 'figma:asset/59b667750b1988c0a6273c07ef14c39f97f305ea.png'
-import image_421a1d099a68f9707d70bc24e409c9b0cc291fff from 'figma:asset/421a1d099a68f9707d70bc24e409c9b0cc291fff.png'
-import image_f2d3b023094edbc47e88e3c458a6c416d3d094eb from 'figma:asset/f2d3b023094edbc47e88e3c458a6c416d3d094eb.png'
+import image_59b667750b1988c0a6273c07ef14c39f97f305ea from 'src/assets/59b667750b1988c0a6273c07ef14c39f97f305ea.png'
+import image_421a1d099a68f9707d70bc24e409c9b0cc291fff from 'src/assets/421a1d099a68f9707d70bc24e409c9b0cc291fff.png'
+import image_f2d3b023094edbc47e88e3c458a6c416d3d094eb from 'src/assets/f2d3b023094edbc47e88e3c458a6c416d3d094eb.png'
 import { useState, useRef } from 'react';
 import { ArrowLeft, Calendar, ChevronLeft, ChevronRight, User } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
