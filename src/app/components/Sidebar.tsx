@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router';
 import { LayoutDashboard, MessageCircle, Activity, FileText, Search, History, LogOut, X } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useSidebar } from '../context/SidebarContext';
@@ -13,13 +13,11 @@ export function Sidebar() {
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
     { path: '/case-search', label: 'ค้นหาเคส', icon: Search },
-    { path: '/chatbot', label: 'AI Assistant', icon: MessageCircle },
   ];
 
   const navItemsPatient = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/chatbot', label: 'AI Chatbot', icon: MessageCircle },
-    { path: '/mri-upload', label: 'Upload MRI', icon: Activity },
+    { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
     { path: '/patient-history', label: 'ประวัติการรักษา', icon: History },
   ];
 

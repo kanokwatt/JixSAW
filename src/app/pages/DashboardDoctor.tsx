@@ -1,5 +1,5 @@
 import { Users, FileCheck, Clock, Search, TrendingUp, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const mockStats = {
   totalPatients: 156,
@@ -24,7 +24,7 @@ export function DashboardDoctor() {
   ];
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -114,9 +114,12 @@ export function DashboardDoctor() {
                     </div>
                   </td>
                   <td className="p-4">
-                    <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-semibold">
+                    <Link 
+                      to="/case-search"
+                      className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-semibold inline-block"
+                    >
                       Review
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               ))}

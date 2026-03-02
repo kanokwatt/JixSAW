@@ -1,6 +1,6 @@
 import { Users, FileCheck, Clock, TrendingUp, Plus, Upload, ArrowUpRight } from 'lucide-react';
 import { dashboardStats, mockCases } from '../data/mockData';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 export function Dashboard() {
   const stats = [

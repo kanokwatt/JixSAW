@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search, Filter, Calendar, User, FileText, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react';
+import { Search, User, Calendar, Activity, AlertCircle, ThumbsUp, ThumbsDown, MessageSquare, Eye, FileText } from 'lucide-react';
+import { Link } from 'react-router';
 
 const mockCases = [
   {
@@ -64,7 +65,7 @@ export function CaseSearch() {
   });
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">ค้นหาเคส</h1>
@@ -163,26 +164,35 @@ export function CaseSearch() {
 
               {/* Doctor Opinion */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    caseItem.doctorOpinion === 'Agree' ? 'bg-emerald-100' : 'bg-orange-100'
-                  }`}>
-                    {caseItem.doctorOpinion === 'Agree' ? (
-                      <ThumbsUp className="w-5 h-5 text-emerald-700" />
-                    ) : (
-                      <ThumbsDown className="w-5 h-5 text-orange-700" />
-                    )}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      caseItem.doctorOpinion === 'Agree' ? 'bg-emerald-100' : 'bg-orange-100'
+                    }`}>
+                      {caseItem.doctorOpinion === 'Agree' ? (
+                        <ThumbsUp className="w-5 h-5 text-emerald-700" />
+                      ) : (
+                        <ThumbsDown className="w-5 h-5 text-orange-700" />
+                      )}
+                    </div>
+                    <h4 className="font-bold text-base">Doctor's Opinion</h4>
+                    <span
+                      className={`ml-2 px-3 py-1 rounded-lg text-xs font-bold ${
+                        caseItem.doctorOpinion === 'Agree'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-orange-100 text-orange-700'
+                      }`}
+                    >
+                      {caseItem.doctorOpinion}
+                    </span>
                   </div>
-                  <h4 className="font-bold text-base">Doctor's Opinion</h4>
-                  <span
-                    className={`ml-2 px-3 py-1 rounded-lg text-xs font-bold ${
-                      caseItem.doctorOpinion === 'Agree'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-orange-100 text-orange-700'
-                    }`}
+                  <Link
+                    to={`/patient-review?id=${caseItem.id}`}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-emerald-500 text-white rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all duration-200 font-semibold"
                   >
-                    {caseItem.doctorOpinion}
-                  </span>
+                    <Eye className="w-4 h-4" />
+                    ดูประวัติผู้ป่วย
+                  </Link>
                 </div>
                 <div className="bg-gradient-to-r from-accent/70 to-accent/40 rounded-xl p-5 border-2 border-border">
                   <div className="flex gap-3">

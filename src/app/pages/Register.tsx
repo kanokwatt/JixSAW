@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router';
 import { Activity, User, Mail, Globe, Stethoscope, Heart } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 

@@ -1,5 +1,5 @@
 import { MessageCircle, Calendar, FileText, Activity, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { useUser } from '../context/UserContext';
 
 export function DashboardPatient() {
@@ -17,7 +17,7 @@ export function DashboardPatient() {
   ];
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
       {/* Appointment Countdown - มุมขวาบน */}
       <div className="fixed top-8 right-8 z-50">
         <div className="bg-red-50 border-2 border-red-300 rounded-2xl p-5 shadow-xl">
@@ -47,12 +47,12 @@ export function DashboardPatient() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
-          to="/chatbot"
+          to="/mri-upload"
           className="bg-gradient-to-br from-primary to-emerald-500 rounded-2xl p-8 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group text-white"
         >
           <MessageCircle className="w-12 h-12 mb-4" />
-          <h3 className="text-2xl font-bold mb-2">Chat with AI</h3>
-          <p className="text-white/90 font-medium">ปรึกษาและถามคำถามเกี่ยวกับโรคของคุณ</p>
+          <h3 className="text-2xl font-bold mb-2">MRI Assessment & AI Chat</h3>
+          <p className="text-white/90 font-medium">อัปโหลด MRI และปรึกษา AI Assistant</p>
         </Link>
 
         <Link

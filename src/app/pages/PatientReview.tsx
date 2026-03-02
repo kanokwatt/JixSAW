@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, Search, Calendar, TrendingUp, TrendingDown, Minus, User, FileText, Activity, ZoomIn, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 

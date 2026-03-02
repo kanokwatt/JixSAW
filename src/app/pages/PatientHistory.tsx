@@ -50,7 +50,7 @@ export function PatientHistory() {
   const { user } = useUser();
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">ประวัติการรักษา</h1>
