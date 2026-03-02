@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Activity, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useUser } from 'src/app/context/UserContext.tsx';
+import { useUser } from 'src/app/context/UserContext';
 import Link from 'next/link';
 
 export default function Login() {

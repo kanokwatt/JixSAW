@@ -1,6 +1,7 @@
 import "../styles/index.css"; // เรียกใช้ Tailwind ตรงนี้
-import { UserProvider } from "src/app/context/UserContext.tsx"; 
-import { SidebarProvider } from "src/app/context/SidebarContext.tsx";
+// แก้ไข Path ให้ใช้ ./ และลบ .tsx ออก
+import { UserProvider } from "./context/UserContext"; 
+import { SidebarProvider } from "./context/SidebarContext";
 
 export const metadata = {
   title: "JIxSAW Health",
@@ -17,9 +18,7 @@ export default function RootLayout({
       <body>
         <UserProvider>
           <SidebarProvider>
-            <UserProvider>
-              {children}
-            </UserProvider>
+            {children}
           </SidebarProvider>
         </UserProvider>
       </body>
