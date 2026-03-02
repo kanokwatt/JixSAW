@@ -1,15 +1,31 @@
 # Async Patterns
 
-In Next.js 15+, `params`, `searchParams`, `cookies()`, and `headers()` are asynchronous.
+Depending on your Next.js version (and whether you’re on canary/experimental features), some request APIs may be asynchronous.
+
+Examples that may become async in newer versions:
+- `params`, `searchParams` passed to pages/layouts
+- `cookies()`, `headers()` helpers
+
+Guidance:
+- Prefer writing Server Components as `async` and use `await` in a way that stays compatible if values become Promises.
+- Do **not** blindly change types across a codebase. Check the installed Next.js version and follow the official migration notes/codemods.
 
 ## Async Params and SearchParams
 
-Always type them as `Promise<...>` and await them.
+If your version passes `params` / `searchParams` as Promises, you must await them.
+If your version passes them synchronously, `await` still works at runtime, but TypeScript types differ.
+
+To keep code forward-compatible, you can use a `MaybePromise<T>` helper type:
+
+```tsx
+type MaybePromise<T> = T | Promise<T>
+```
 
 ### Pages and Layouts
 
 ```tsx
-type Props = { params: Promise<{ slug: string }> }
+type MaybePromise<T> = T | Promise<T>
+type Props = { params: MaybePromise<{ slug: string }> }
 
 export default async function Page({ params }: Props) {
   const { slug } = await params
@@ -21,7 +37,7 @@ export default async function Page({ params }: Props) {
 ```tsx
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   const { id } = await params
 }
@@ -31,8 +47,8 @@ export async function GET(
 
 ```tsx
 type Props = {
-  params: Promise<{ slug: string }>
-  searchParams: Promise<{ query?: string }>
+  params: { slug: string } | Promise<{ slug: string }>
+  searchParams: { query?: string } | Promise<{ query?: string }>
 }
 
 export default async function Page({ params, searchParams }: Props) {
@@ -72,6 +88,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 import { cookies, headers } from 'next/headers'
 
 export default async function Page() {
+  // Some versions return values synchronously, some asynchronously.
+  // Using await keeps the call sites compatible.
   const cookieStore = await cookies()
   const headersList = await headers()
 

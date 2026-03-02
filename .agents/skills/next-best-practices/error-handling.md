@@ -98,9 +98,6 @@ async function createPost(formData: FormData) {
     const post = await db.post.create({ ... })
     redirect(`/posts/${post.id}`)
   } catch (error) {
-    if (error instanceof Error && error.message === 'NEXT_REDIRECT') {
-      throw error  // Re-throw navigation errors
-    }
     return { error: 'Failed to create post' }
   }
 }
@@ -110,24 +107,11 @@ Same applies to:
 - `redirect()` - 307 temporary redirect
 - `permanentRedirect()` - 308 permanent redirect
 - `notFound()` - 404 not found
-- `forbidden()` - 403 forbidden
-- `unauthorized()` - 401 unauthorized
 
-Use `unstable_rethrow()` to re-throw these errors in catch blocks:
+If you must catch broadly (e.g. a shared helper), prefer structuring code so navigation calls happen **outside** the try-catch.
 
-```tsx
-import { unstable_rethrow } from 'next/navigation'
-
-async function action() {
-  try {
-    // ...
-    redirect('/success')
-  } catch (error) {
-    unstable_rethrow(error) // Re-throws Next.js internal errors
-    return { error: 'Something went wrong' }
-  }
-}
-```
+Some Next.js versions also expose helpers to rethrow internal navigation errors (often marked `unstable_*`).
+If your installed Next.js version provides such a helper, you may use it — otherwise keep navigation outside try-catch.
 
 ## Redirects
 
@@ -143,39 +127,12 @@ permanentRedirect('/new-url')
 
 ## Auth Errors
 
-Trigger auth-related error pages:
+Auth/authorization UX is usually implemented via:
+- Middleware redirects/rewrites (e.g. redirect unauthenticated users to `/login`)
+- Segment-level `error.tsx` / `not-found.tsx` patterns
+- App-specific “access denied” pages
 
-```tsx
-import { forbidden, unauthorized } from 'next/navigation'
-
-async function Page() {
-  const session = await getSession()
-
-  if (!session) {
-    unauthorized() // Renders unauthorized.tsx (401)
-  }
-
-  if (!session.hasAccess) {
-    forbidden() // Renders forbidden.tsx (403)
-  }
-
-  return <Dashboard />
-}
-```
-
-Create corresponding error pages:
-
-```tsx
-// app/forbidden.tsx
-export default function Forbidden() {
-  return <div>You don't have access to this resource</div>
-}
-
-// app/unauthorized.tsx
-export default function Unauthorized() {
-  return <div>Please log in to continue</div>
-}
-```
+Because auth primitives vary by Next.js version and by auth library, follow your project’s established pattern.
 
 ## Not Found
 

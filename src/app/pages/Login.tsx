@@ -75,7 +75,7 @@ export function Login() {
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-2 font-medium">
-                  💡 Tip: ใช้ email ที่มี "doctor" เพื่อเข้าสู่โหมดแพทย์
+                  💡 Tip: ใช้ email ที่มี &quot;doctor&quot; เพื่อเข้าสู่โหมดแพทย์
                 </p>
               </div>
 

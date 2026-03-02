@@ -1,4 +1,4 @@
-import { FileText, Calendar, Activity, CheckCircle, AlertCircle, User } from 'lucide-react';
+import { Calendar, Activity, CheckCircle, AlertCircle, User } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
 const mockHistory = [

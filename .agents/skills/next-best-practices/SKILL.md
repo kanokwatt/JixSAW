@@ -8,6 +8,17 @@ user-invocable: false
 
 Apply these rules when writing or reviewing Next.js code.
 
+## Applicability Check (Before Applying These Rules)
+
+If the repo is not actually a Next.js app, **do not apply** Next.js-specific guidance.
+
+Quick checks:
+- `package.json` has `next` in `dependencies` and scripts use `next dev|build|start`.
+- A Next config exists (`next.config.js|mjs|ts`).
+- Routing lives under `app/` (App Router) and/or `pages/` (Pages Router).
+
+If you find mismatches (e.g. scripts run Vite but the repo has `next.config.js`), fix the project wiring first.
+
 ## File Conventions
 
 See [file-conventions.md](./file-conventions.md) for:
@@ -27,7 +38,8 @@ See [rsc-boundaries.md](./rsc-boundaries.md) for:
 
 ## Async Patterns
 
-Next.js 15+ async API changes.
+Some Next.js versions introduce async request APIs (e.g. `params`, `searchParams`, `cookies()`, `headers()`).
+Treat async-ness as **version-dependent** and follow your project’s Next.js version + official migration docs.
 
 See [async-patterns.md](./async-patterns.md) for:
 - Async `params` and `searchParams`
@@ -44,7 +56,7 @@ See [runtime-selection.md](./runtime-selection.md) for:
 
 See [directives.md](./directives.md) for:
 - `'use client'`, `'use server'` (React)
-- `'use cache'` (Next.js)
+- `'use cache'` (Next.js, may be experimental depending on version)
 
 ## Functions
 
@@ -58,8 +70,8 @@ See [functions.md](./functions.md) for:
 See [error-handling.md](./error-handling.md) for:
 - `error.tsx`, `global-error.tsx`, `not-found.tsx`
 - `redirect`, `permanentRedirect`, `notFound`
-- `forbidden`, `unauthorized` (auth errors)
-- `unstable_rethrow` for catch blocks
+- Auth error patterns (version-dependent)
+- Rethrow patterns for navigation errors (version-dependent)
 
 ## Data Patterns
 

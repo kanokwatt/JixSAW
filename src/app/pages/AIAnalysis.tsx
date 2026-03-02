@@ -161,7 +161,7 @@ export function AIAnalysis() {
                     <div>
                       <h4 className="font-bold text-orange-900 mb-2 text-base">Findings Detected</h4>
                       <ul className="text-sm text-orange-800 space-y-1.5 font-medium">
-                        <li>• Suspicious lesion detected at 3 o'clock position</li>
+                        <li>• Suspicious lesion detected at 3 o&apos;clock position</li>
                         <li>• Irregular vascular pattern observed</li>
                         <li>• Recommend biopsy for histological confirmation</li>
                       </ul>

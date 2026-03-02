@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router';
-import { LayoutDashboard, MessageCircle, Activity, FileText, Search, History, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, Activity, Search, History, LogOut, X } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useSidebar } from '../context/SidebarContext';
 import { motion, AnimatePresence } from 'motion/react';

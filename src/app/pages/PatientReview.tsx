@@ -200,6 +200,12 @@ export function PatientReview() {
             </p>
           </div>
         </div>
+        <button
+          onClick={() => navigate('/case-search')}
+          className="px-5 py-2.5 bg-card border-2 border-border rounded-xl hover:bg-accent transition-colors font-semibold"
+        >
+          Back to Cases
+        </button>
       </div>
 
       {/* Patient Info Card */}
@@ -220,6 +226,8 @@ export function PatientReview() {
                 <span>HN: {mockPatient.hn}</span>
                 <span>•</span>
                 <span>{mockPatient.age} ปี • {mockPatient.gender}</span>
+                <span>•</span>
+                <span>Patient ID: {patientId}</span>
               </div>
             </div>
           </div>
@@ -245,7 +253,7 @@ export function PatientReview() {
         </div>
         <select
           value={filterRisk}
-          onChange={(e) => setFilterRisk(e.target.value as any)}
+          onChange={(e) => setFilterRisk(e.target.value as typeof filterRisk)}
           className="px-6 py-3.5 bg-card border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium shadow-sm appearance-none cursor-pointer"
         >
           <option value="all">All Risk Levels</option>
@@ -474,7 +482,7 @@ export function PatientReview() {
                   {/* Doctor's Notes */}
                   {selectedScan.doctorNotes && (
                     <div>
-                      <h4 className="text-sm font-bold text-muted-foreground mb-3">DOCTOR'S NOTES</h4>
+                      <h4 className="text-sm font-bold text-muted-foreground mb-3">DOCTOR&apos;S NOTES</h4>
                       <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border-2 border-emerald-200 rounded-xl p-4">
                         <p className="text-sm text-emerald-900 font-medium leading-relaxed">
                           {selectedScan.doctorNotes}

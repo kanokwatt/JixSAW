@@ -56,18 +56,18 @@ Reference: https://react.dev/reference/rsc/use-server
 
 ### `'use cache'`
 
-Marks a function or component for caching. Part of Next.js Cache Components.
+Marks a function or component for caching.
+
+Note: This directive is **version/feature-flag dependent**. Only use it if your project’s Next.js version supports it and it’s enabled in your configuration.
 
 ```tsx
-'use cache'
+// 'use cache'
 
 export async function getCachedData() {
   return await fetchData()
 }
 ```
 
-Requires `cacheComponents: true` in `next.config.ts`.
-
-For detailed usage including cache profiles, `cacheLife()`, `cacheTag()`, and `updateTag()`, see the `next-cache-components` skill.
+If you need caching primitives like cache profiles, tag-based invalidation, or cache lifetime APIs, follow the official docs for your Next.js version.
 
 Reference: https://nextjs.org/docs/app/api-reference/directives/use-cache

@@ -235,7 +235,9 @@ Check your matcher:
 
 ### 5. TypeScript Errors with `params`
 
-In Next.js 15+, `params` is a Promise:
+In some Next.js versions (or when certain experimental features are enabled), `params` can be a Promise.
+
+To keep route code compatible, prefer `await params` in async Server Components:
 
 ```tsx
 // Correct

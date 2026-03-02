@@ -37,7 +37,7 @@ export function Dashboard() {
         <div>
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">Dashboard</h1>
           <p className="text-muted-foreground text-base">
-            Overview of today's cystoscopy cases and AI analysis
+            Overview of today&apos;s cystoscopy cases and AI analysis
           </p>
         </div>
         <div className="flex gap-3">

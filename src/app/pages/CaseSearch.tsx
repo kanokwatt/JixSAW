@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, User, Calendar, Activity, AlertCircle, ThumbsUp, ThumbsDown, MessageSquare, Eye, FileText } from 'lucide-react';
+import { Search, User, Calendar, ThumbsUp, ThumbsDown, MessageSquare, Eye, FileText } from 'lucide-react';
 import { Link } from 'react-router';
 
 const mockCases = [
@@ -175,7 +175,7 @@ export function CaseSearch() {
                         <ThumbsDown className="w-5 h-5 text-orange-700" />
                       )}
                     </div>
-                    <h4 className="font-bold text-base">Doctor's Opinion</h4>
+                    <h4 className="font-bold text-base">Doctor&apos;s Opinion</h4>
                     <span
                       className={`ml-2 px-3 py-1 rounded-lg text-xs font-bold ${
                         caseItem.doctorOpinion === 'Agree'

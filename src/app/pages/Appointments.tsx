@@ -9,7 +9,7 @@ export function Appointments() {
         <div>
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">Appointments</h1>
           <p className="text-muted-foreground text-base font-medium">
-            Today's scheduled cystoscopy procedures
+            Today&apos;s scheduled cystoscopy procedures
           </p>
         </div>
         <div className="flex gap-3">

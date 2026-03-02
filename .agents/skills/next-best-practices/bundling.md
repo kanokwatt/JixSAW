@@ -139,7 +139,9 @@ module.exports = {
 
 ## Bundle Analysis
 
-Analyze bundle size with the built-in analyzer (Next.js 16.1+):
+Analyze bundle size using the tooling available in your Next.js version.
+
+Some releases expose experimental CLI commands for analysis (names and flags can change across versions), so prefer checking the official docs for the exact command in your project.
 
 ```bash
 next experimental-analyze
@@ -161,7 +163,8 @@ Reference: https://nextjs.org/docs/app/guides/package-bundling
 
 ## Migrating from Webpack to Turbopack
 
-Turbopack is the default bundler in Next.js 15+. If you have custom webpack config, migrate to Turbopack-compatible alternatives:
+Newer Next.js versions increasingly prefer Turbopack for development/build.
+If you have custom webpack config, migrate toward supported alternatives where possible:
 
 ```js
 // next.config.js

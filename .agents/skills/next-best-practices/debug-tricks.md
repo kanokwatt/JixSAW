@@ -6,8 +6,9 @@ Tricks to speed up debugging Next.js applications.
 
 Next.js exposes a `/_next/mcp` endpoint in development for AI-assisted debugging via MCP (Model Context Protocol).
 
-- **Next.js 16+**: Enabled by default, use `next-devtools-mcp`
-- **Next.js < 16**: Requires `experimental.mcpServer: true` in next.config.js
+Availability and configuration are **version-dependent**. If your Next.js version supports the `/_next/mcp` endpoint, it may be:
+- Enabled by default, or
+- Behind an `experimental` flag in `next.config.*`
 
 Reference: https://nextjs.org/docs/app/guides/mcp
 
@@ -84,9 +85,9 @@ curl -X POST http://localhost:<port>/_next/mcp \
   -d '{"jsonrpc":"2.0","id":"1","method":"tools/call","params":{"name":"get_errors","arguments":{}}}'
 ```
 
-## Rebuild Specific Routes (Next.js 16+)
+## Rebuild Specific Routes
 
-Use `--debug-build-paths` to rebuild only specific routes instead of the entire app:
+Some Next.js versions expose flags to rebuild/diagnose specific routes (for example, `--debug-build-paths`). If your installed version supports it, it can speed up iteration:
 
 ```bash
 # Rebuild a specific route
