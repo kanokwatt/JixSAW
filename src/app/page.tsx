@@ -22,31 +22,27 @@ export default function Login() {
     setTimeout(() => {
       // สมมติว่าเป็นแพทย์ถ้า email มี "doctor" หรือ "dr"
       const isDoctor = email.toLowerCase().includes('doctor') || email.toLowerCase().includes('dr');
-      
-      if (isDoctor) {
-        router.push('/dashboard'); // เปลี่ยนเป็นหน้าสำหรับแพทย์
-      } else {
-        router.push('/patient-dashboard'); // เปลี่ยนเป็นหน้าสำหรับผู้ป่วย
-      }
-      
-      // setUser({
-      //   firstName: isDoctor ? 'Siriwan' : 'สมชาย',
-      //   lastName: isDoctor ? 'Prateep' : 'ใจดี',
-      //   email: email,
-      //   role: isDoctor ? 'doctor' : 'patient',
-      //   country: 'Thailand'
-      // });
+
+      // Set user in context
+      setUser({
+        firstName: isDoctor ? 'Siriwan' : 'สมชาย',
+        lastName: isDoctor ? 'Prateep' : 'ใจดี',
+        email: email,
+        role: isDoctor ? 'doctor' : 'patient',
+        country: 'Thailand'
+      });
 
       setIsLoading(false);
-      router.push('/');
+      // Navigate to dashboard (dashboard component can render role-specific view)
+      router.push('/dashboard');
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="h-screen flex bg-background overflow-hidden">
       {/* Left Side - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center px-4 py-6 lg:py-8">
+        <div className="w-full max-w-md h-full flex flex-col justify-center">
           {/* Logo & Header */}
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-3 mb-6">
@@ -61,7 +57,7 @@ export default function Login() {
           </div>
 
           {/* Login Form */}
-          <div className="bg-card rounded-3xl shadow-2xl border border-border p-8">
+          <div className="bg-card rounded-3xl shadow-2xl border border-border p-6 md:p-8 max-h-[calc(100vh-6rem)] overflow-auto">
             <h2 className="text-3xl font-bold mb-2">เข้าสู่ระบบ</h2>
             <p className="text-muted-foreground mb-6 text-sm">กรุณาเข้าสู่ระบบเพื่อเริ่มใช้งาน</p>
             
@@ -200,7 +196,7 @@ export default function Login() {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-center text-sm text-muted-foreground">
+          <div className="mt-6 text-center text-sm text-muted-foreground">
             <p className="font-medium">© 2026 JIxSAW Health. All rights reserved.</p>
             <p className="mt-2 flex items-center justify-center gap-2">
               <span className="inline-block w-2 h-2 bg-primary rounded-full"></span>

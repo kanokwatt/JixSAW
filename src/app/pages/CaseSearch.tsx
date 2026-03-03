@@ -54,6 +54,8 @@ const mockCases = [
   },
 ];
 
+"use client";
+
 export function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');

@@ -1,3 +1,5 @@
+"use client";
+
 import { useUser } from '../context/UserContext';
 import { DashboardDoctor } from './DashboardDoctor';
 import { DashboardPatient } from './DashboardPatient';

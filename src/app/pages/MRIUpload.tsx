@@ -12,6 +12,8 @@ interface Message {
   feedbackComment?: string;
 }
 
+"use client";
+
 export function MRIUpload() {
   const { user } = useUser();
   const [isAnalyzing, setIsAnalyzing] = useState(false);

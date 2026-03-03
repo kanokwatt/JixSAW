@@ -32,7 +32,7 @@ export function Login() {
       });
 
       setIsLoading(false);
-      router.push('/');
+      router.push('/dashboard');
     }, 1000);
   };
 
