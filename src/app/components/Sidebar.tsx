@@ -1,28 +1,29 @@
-import { Link, useLocation } from 'react-router';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Activity, Search, History, LogOut, X } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useSidebar } from '../context/SidebarContext';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function Sidebar() {
-  const location = useLocation();
+  const location = { pathname: usePathname() } as { pathname: string };
   const { user, logout } = useUser();
   const { isOpen, closeSidebar } = useSidebar();
-
-  const navItemsDoctor = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
-    { path: '/case-search', label: 'ค้นหาเคส', icon: Search },
-  ];
-
-  const navItemsPatient = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
-    { path: '/patient-history', label: 'ประวัติการรักษา', icon: History },
-  ];
-
-  const navItems = user?.role === 'doctor' ? navItemsDoctor : navItemsPatient;
-
+                      <Link
+                        href={item.path}
+                        onClick={handleNavClick}
+                        className={
+                          `
+                          flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 font-medium
+                          ${isActive 
+                            ? 'bg-gradient-to-r from-primary to-emerald-500 text-white shadow-lg shadow-primary/25 scale-[1.02]' 
+                            : 'text-foreground/70 hover:bg-accent hover:text-foreground hover:scale-[1.01]'
+                          }
+                        `}
+                      >
+                        <Icon className="w-5 h-5" />
+                        <span className="text-[15px]">{item.label}</span>
+                      </Link>
   const handleNavClick = () => {
     closeSidebar();
   };

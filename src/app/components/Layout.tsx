@@ -31,7 +31,9 @@ export function Layout() {
         </header>
 
         <main className="flex-1 overflow-y-auto">
-          <Outlet />
+          <div className="app-container p-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

@@ -3,7 +3,8 @@
 :root {
   --font-size: 16px;
   --font-family: 'Inter', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --background: #FAFAF9;
+  /* Background: soft beige/cream to reduce eye strain */
+  --background: #F3E8D8;
   --foreground: #18181B;
   --card: #ffffff;
   --card-foreground: #18181B;
@@ -19,7 +20,7 @@
   --accent-foreground: #18181B;
   --destructive: #EF4444;
   --destructive-foreground: #ffffff;
-  --border: #E4E4E7;
+  --border: #E9E6E0;
   --input: transparent;
   --input-background: #FAFAFA;
   --switch-background: #D4D4D8;
@@ -184,4 +185,28 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
+}
+
+/* Soft shadow override for card visuals to create floating white cards */
+.shadow-2xl {
+  box-shadow: 0 10px 30px rgba(13,24,35,0.08) !important;
+}
+
+/* Ensure bg-card uses our CSS variable (helps even if Tailwind utilities vary) */
+.bg-card {
+  background: var(--card) !important;
+}
+
+/* Small helper to keep primary accent consistent */
+.bg-primary-custom {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground);
+}
+
+/* Constrain content container width for desktop layouts */
+.app-container {
+  max-width: 1920px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
