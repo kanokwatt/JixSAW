@@ -1,1 +1,16 @@
-venv
+# Environments
+.venv/
+venv/
+__pycache__/
+
+# Node
+node_modules/
+dist/
+
+# Secrets (ห้ามเอาขึ้นเด็ดขาด)
+.env
+.env.local
+
+# AI Models (ไฟล์ใหญ่เกินไป)
+*.pth
+*.h5
