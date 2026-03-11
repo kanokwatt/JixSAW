@@ -39,7 +39,7 @@ logger.info(f"Using device: {device}")
 
 # Model configuration
 MODEL_PATH = "best_model.pth"
-CLASS_NAMES = ["T0", "T1", "T2", "T3", "T4"]  # ปรับตาม classes ที่เทรนจริง
+CLASS_NAMES = ["T0", "T1", "T2", "T3"]  # 4 classes ตามโมเดลที่เทรนจริง
 NUM_CLASSES = len(CLASS_NAMES)
 
 # Image preprocessing (same as transform_test from training)
@@ -59,9 +59,12 @@ def load_model():
         # Load ResNet50 architecture
         model = models.resnet50(pretrained=False)
         
-        # Modify final layer for our number of classes
+        # Modify final layer for our number of classes (match training structure)
         num_ftrs = model.fc.in_features
-        model.fc = nn.Linear(num_ftrs, NUM_CLASSES)
+        model.fc = nn.Sequential(
+            nn.Dropout(0.5),
+            nn.Linear(num_ftrs, NUM_CLASSES)
+        )
         
         # Load trained weights
         if os.path.exists(MODEL_PATH):
@@ -91,6 +94,7 @@ def preprocess_image(image_bytes):
     try:
         # Open image from bytes
         image = Image.open(io.BytesIO(image_bytes))
+        logger.info(f"Image opened: mode={image.mode}, size={image.size}, format={image.format}")
         
         # Convert RGB if necessary
         if image.mode != 'RGB':
@@ -99,6 +103,10 @@ def preprocess_image(image_bytes):
         # Apply transformations
         image_tensor = transform(image).unsqueeze(0)
         image_tensor = image_tensor.to(device)
+        
+        # Log tensor statistics for debugging
+        logger.info(f"Tensor shape: {image_tensor.shape}, mean: {image_tensor.mean():.4f}, std: {image_tensor.std():.4f}")
+        logger.info(f"Tensor min: {image_tensor.min():.4f}, max: {image_tensor.max():.4f}")
         
         return image_tensor
         
@@ -111,18 +119,27 @@ def predict_image(image_tensor):
     try:
         with torch.no_grad():
             outputs = model(image_tensor)
+            logger.info(f"Raw model outputs: {outputs}")
+            
             probabilities = F.softmax(outputs, dim=1)
+            logger.info(f"Softmax probabilities: {probabilities}")
+            
+            # Get all probabilities for debugging
+            all_probs = {cls: f"{prob:.4f}" for cls, prob in zip(CLASS_NAMES, probabilities[0].tolist())}
+            logger.info(f"All class probs: {all_probs}")
             
             # Get predicted class and confidence
             confidence, predicted_class = torch.max(probabilities, 1)
             confidence = confidence.item()
             predicted_class = predicted_class.item()
             
+            logger.info(f"Predicted class index: {predicted_class}, confidence: {confidence}")
+            
             # Map to class name
             stage = CLASS_NAMES[predicted_class]
             confidence_percent = f"{confidence * 100:.2f}%"
             
-            return stage, confidence_percent
+            return stage, confidence_percent, all_probs
             
     except Exception as e:
         logger.error(f"Error during prediction: {str(e)}")
@@ -145,12 +162,37 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Detailed health check"""
+    """Detailed health check with model test"""
+    # Test model with random inputs to verify it's working
+    test_results = {}
+    if model is not None:
+        try:
+            # Create 3 different random test images
+            for i in range(3):
+                # Create random noise image with different seed
+                torch.manual_seed(i * 100)
+                test_tensor = torch.randn(1, 3, 224, 224).to(device)
+                
+                with torch.no_grad():
+                    output = model(test_tensor)
+                    probs = F.softmax(output, dim=1)
+                    conf, pred_class = torch.max(probs, 1)
+                    
+                test_results[f"test_{i}"] = {
+                    "predicted": CLASS_NAMES[pred_class.item()],
+                    "confidence": f"{conf.item():.2%}",
+                    "all_probs": {cls: f"{prob:.4f}" for cls, prob in zip(CLASS_NAMES, probs[0].tolist())}
+                }
+        except Exception as e:
+            test_results["error"] = str(e)
+    
     return {
         "status": "healthy",
         "model_loaded": model is not None,
         "device": str(device),
-        "model_path": MODEL_PATH
+        "model_path": MODEL_PATH,
+        "num_params": sum(p.numel() for p in model.parameters()) if model else 0,
+        "test_predictions": test_results
     }
 
 @app.post("/predict")
@@ -179,17 +221,18 @@ async def predict(file: UploadFile = File(...)):
         image_tensor = preprocess_image(image_bytes)
         
         # Make prediction
-        stage, confidence = predict_image(image_tensor)
+        stage, confidence, all_probs = predict_image(image_tensor)
         
-        # Return results
+        # Return results with full probability breakdown
         result = {
             "stage": stage,
             "confidence": confidence,
+            "all_probabilities": all_probs,
             "model": "ResNet50",
             "status": "success"
         }
         
-        logger.info(f"Prediction: {stage} with confidence {confidence}")
+        logger.info(f"FINAL PREDICTION: {stage} ({confidence}) | All probs: {all_probs}")
         return result
         
     except HTTPException:

@@ -8,7 +8,7 @@ from pydantic import BaseModel
 import shutil
 import uuid
 import os
-import requests
+import requests  
 
 # Import ไฟล์ที่เราสร้างเอง
 import models, auth, ai_service
@@ -191,10 +191,7 @@ async def upload_xray(file: UploadFile = File(...),
         processed_by = "AI-Engine-Error"
 
     # 6. สร้าง DiagnosisResult 
-    ai_stage_enum = prediction.lower().replace(" ", "_")
-    if ai_stage_enum not in ['low_risk', 'medium_risk', 'high_risk', 'cancerous']:
-        ai_stage_enum = 'medium_risk' # Default fallback
-        
+    
     stage_mapping = {
         "t0": "low_risk",
         "t1": "medium_risk",
