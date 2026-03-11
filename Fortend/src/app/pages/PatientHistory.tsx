@@ -1,5 +1,6 @@
 import { FileText, Calendar, Activity, CheckCircle, AlertCircle, User } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import { useAppSettings } from '../context/AppSettingsContext';
 
 // mockHistory คือประวัติการประเมินของผู้ป่วยแต่ละครั้ง พร้อมความเห็นแพทย์
 const mockHistory = [
@@ -50,14 +51,30 @@ const mockHistory = [
 // หน้าประวัติการรักษา แสดง timeline ของผลประเมิน AI และการทบทวนโดยแพทย์
 export function PatientHistory() {
   const { user } = useUser();
+  const { t, locale, formatDate } = useAppSettings();
+
+  const getRiskLabel = (risk: string) => {
+    if (locale === 'en') return risk;
+    if (risk === 'Low Risk') return 'ความเสี่ยงต่ำ';
+    if (risk === 'Medium Risk') return 'ความเสี่ยงปานกลาง';
+    if (risk === 'High Risk') return 'ความเสี่ยงสูง';
+    return risk;
+  };
+
+  const getOpinionLabel = (opinion: string) => {
+    if (locale === 'en') return opinion;
+    if (opinion === 'Agree') return 'เห็นด้วย';
+    if (opinion === 'Partially Agree') return 'เห็นด้วยบางส่วน';
+    return opinion;
+  };
 
   return (
     <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">ประวัติการรักษา</h1>
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">{t('patientHistory.title')}</h1>
         <p className="text-muted-foreground text-base font-medium">
-          ประวัติการประเมินและความเห็นของแพทย์ทั้งหมด
+          {t('patientHistory.subtitle')}
         </p>
       </div>
 
@@ -93,7 +110,7 @@ export function PatientHistory() {
                     <h3 className="text-xl font-bold">{record.type}</h3>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium mt-1">
                       <Calendar className="w-4 h-4" />
-                      <span>{new Date(record.date).toLocaleDateString('th-TH', { 
+                      <span>{formatDate(record.date, { 
                         year: 'numeric', 
                         month: 'long', 
                         day: 'numeric' 
@@ -109,11 +126,11 @@ export function PatientHistory() {
               <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Activity className="w-5 h-5 text-primary" />
-                  <h4 className="font-bold text-base">การประเมินจาก AI</h4>
+                  <h4 className="font-bold text-base">{t('patientHistory.aiAssessment')}</h4>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-accent/50 rounded-xl p-5">
-                    <p className="text-xs text-muted-foreground font-semibold mb-2">ผลการประเมิน</p>
+                    <p className="text-xs text-muted-foreground font-semibold mb-2">{t('patientHistory.assessmentResult')}</p>
                     <span
                       className={`inline-flex items-center px-4 py-2 rounded-lg text-sm font-bold shadow-sm
                         ${record.aiResult === 'Low Risk' ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200' : ''}
@@ -121,11 +138,11 @@ export function PatientHistory() {
                         ${record.aiResult === 'High Risk' ? 'bg-red-100 text-red-700 ring-1 ring-red-200' : ''}
                       `}
                     >
-                      {record.aiResult}
+                      {getRiskLabel(record.aiResult)}
                     </span>
                   </div>
                   <div className="bg-accent/50 rounded-xl p-5">
-                    <p className="text-xs text-muted-foreground font-semibold mb-3">ความมั่นใจของ AI</p>
+                    <p className="text-xs text-muted-foreground font-semibold mb-3">{t('patientHistory.aiConfidence')}</p>
                     <div className="flex items-center gap-3">
                       <div className="flex-1 bg-muted rounded-full h-3 overflow-hidden">
                         <div
@@ -149,7 +166,7 @@ export function PatientHistory() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <h4 className="font-bold text-base text-blue-900">ความเห็นของแพทย์</h4>
+                        <h4 className="font-bold text-base text-blue-900">{t('patientHistory.doctorReview')}</h4>
                         <span
                           className={`px-3 py-1 rounded-lg text-xs font-bold ${
                             record.doctorReview.opinion === 'Agree'
@@ -157,16 +174,16 @@ export function PatientHistory() {
                               : 'bg-orange-100 text-orange-700 ring-1 ring-orange-200'
                           }`}
                         >
-                          {record.doctorReview.opinion}
+                          {getOpinionLabel(record.doctorReview.opinion)}
                         </span>
                       </div>
                       <p className="text-sm text-blue-800 font-medium leading-relaxed mb-3">
                         {record.doctorReview.notes}
                       </p>
                       <div className="flex items-center gap-4 text-xs text-blue-600 font-semibold">
-                        <span>แพทย์: {record.doctorReview.doctorName}</span>
+                        <span>{t('patientHistory.doctorLabel')}: {record.doctorReview.doctorName}</span>
                         <span>•</span>
-                        <span>ตรวจสอบเมื่อ: {new Date(record.doctorReview.reviewDate).toLocaleDateString('th-TH')}</span>
+                        <span>{t('patientHistory.reviewedAt')}: {formatDate(record.doctorReview.reviewDate)}</span>
                       </div>
                     </div>
                   </div>
@@ -182,11 +199,8 @@ export function PatientHistory() {
         <div className="flex gap-4">
           <AlertCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold mb-2">หมายเหตุ</h4>
-            <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-              ประวัติการรักษาทั้งหมดได้รับการเก็บรักษาอย่างปลอดภัย คุณสามารถดาวน์โหลดหรือพิมพ์ประวัติเพื่อนำไปใช้ได้ 
-              หากมีข้อสงสัยเกี่ยวกับผลการประเมิน กรุณาปรึกษาแพทย์ของคุณโดยตรง
-            </p>
+            <h4 className="font-bold mb-2">{t('patientHistory.noteTitle')}</h4>
+            <p className="text-sm text-muted-foreground font-medium leading-relaxed">{t('patientHistory.noteDesc')}</p>
           </div>
         </div>
       </div>

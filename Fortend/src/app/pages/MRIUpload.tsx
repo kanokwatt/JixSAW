@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Upload, Loader2, AlertCircle, ThumbsUp, ThumbsDown, MessageSquare, Pen, Eraser, RotateCcw, Send, Bot, User, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useUser } from '../context/UserContext';
+import { useAppSettings } from '../context/AppSettingsContext';
 
 interface Message {
   id: number;
@@ -12,14 +13,23 @@ interface Message {
   feedbackComment?: string;
 }
 
+interface UploadedFilePreview {
+  imageUrl: string;
+  fileName: string;
+  fileSize: number;
+}
+
 // หน้า MRI Assessment รวม 3 งานหลัก: อัปโหลดภาพ, จำลองการวิเคราะห์ AI, และแชตช่วยตอบคำถาม
 export function MRIUpload() {
   const { user } = useUser();
+  const { t, formatTime } = useAppSettings();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showOverlay, setShowOverlay] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState('');
+  const [uploadedFileSize, setUploadedFileSize] = useState(0);
   const [doctorFeedback, setDoctorFeedback] = useState('');
   const [doctorOpinion, setDoctorOpinion] = useState<'good' | 'bad' | null>(null);
   
@@ -70,9 +80,6 @@ export function MRIUpload() {
     'แนวทางการรักษามะเร็งกระเพาะปัสสาวะ Stage 3': 'แนวทางการรักษา Stage III:\n\n🏥 Standard Treatment:\n1. Neoadjuvant Chemotherapy\n   • เคมีบำบัดก่อนผ่าตัด 3-4 รอบ\n   • ช่วยลดขนาดเนื้องอก\n\n2. Radical Cystectomy\n   • ผ่าตัดเอากระเพาะปัสสาวะและอวัยวะใกล้เคียงที่มีมะเร็งลุกลาม\n   • Urinary diversion สร้างทางเดินปัสสาวะใหม่\n\n3. Adjuvant Therapy\n   • เคมีบำบัดหลังผ่าตัด\n   • พิจารณา Immunotherapy\n\n📋 Multidisciplinary Approach:\n• Urologist\n• Medical Oncologist\n• Radiation Oncologist\n• Nutritionist\n• Psychologist\n\n⚕️ ติดตามผลระยะยาวทุก 3-6 เดือน',
     'ความแม่นยำของ MRI ในการตรวจมะเร็งกระเพาะปัสสาวะ': 'ประสิทธิภาพของ MRI ในการตรวจมะเร็งกระเพาะปัสสาวะ:\n\n🔬 ความแม่นยำ:\n• Sensitivity: 85-95%\n• Specificity: 80-90%\n• T-staging accuracy: 85-90%\n• N-staging accuracy: 70-80%\n\n✅ ข้อดี:\n• ความละเอียดสูงในการดูเนื้อเยื่ออ่อน\n• แยกแยะชั้นของผนังกระเพาะปัสสาวะได้ดี\n• ไม่มีรังสี\n• ประเมินการลุกลามไปยังอวัยวะข้างเคียงได้ดี\n\n⚠️ ข้อจำกัด:\n• ราคาแพงกว่า CT\n• ใช้เวลานานกว่า\n• ผู้ป่วยบางรายอาจทำไม่ได้ (มี pacemaker)\n\n🏥 แนะนำใช้ร่วมกับ:\n• Cystoscopy\n• CT Urography\n• Biopsy เพื่อยืนยันผล',
   };
-
-  // Mock MRI image
-  const mockImageUrl = 'https://images.unsplash.com/photo-1516549655169-df83a0774514?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtcmklMjBzY2FuJTIwYmxhZGRlcnxlbnwxfHx8fDE3NDA0ODA4Mzl8MA&ixlib=rb-4.1.0&q=80&w=1080';
 
   // Chatbot functions
   // เลื่อนแชตลงล่างสุดทุกครั้งเมื่อมีข้อความใหม่
@@ -125,16 +132,47 @@ export function MRIUpload() {
     );
   };
 
-  // รับไฟล์จาก input แล้วแปลงเป็น Data URL เพื่อแสดง preview และเริ่มวิเคราะห์
+  // แปลงขนาดไฟล์ให้อ่านง่าย เช่น KB หรือ MB
+  const formatFileSize = (fileSize: number) => {
+    if (fileSize < 1024) {
+      return `${fileSize} B`;
+    }
+
+    if (fileSize < 1024 * 1024) {
+      return `${(fileSize / 1024).toFixed(1)} KB`;
+    }
+
+    return `${(fileSize / (1024 * 1024)).toFixed(2)} MB`;
+  };
+
+  // อ่านไฟล์ที่อัปโหลดแล้วเริ่มกระบวนการวิเคราะห์ โดยยังไม่แสดง preview จนกว่า progress จะครบ 100%
+  const processUploadedFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+
+    // รีเซ็ตผลเดิมเพื่อซ่อน preview ระหว่างอัปโหลดรอบใหม่
+    setSelectedImage(null);
+    setUploadedFileName('');
+    setUploadedFileSize(0);
+    setAnalysisComplete(false);
+    setProgress(0);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const imageUrl = event.target?.result as string;
+      startAnalysis({
+        imageUrl,
+        fileName: file.name,
+        fileSize: file.size,
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // รับไฟล์จาก input แล้วส่งต่อให้ processUploadedFile
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target?.result as string);
-        startAnalysis();
-      };
-      reader.readAsDataURL(file);
+      processUploadedFile(file);
     }
   };
 
@@ -146,18 +184,13 @@ export function MRIUpload() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target?.result as string);
-        startAnalysis();
-      };
-      reader.readAsDataURL(file);
+    if (file) {
+      processUploadedFile(file);
     }
   };
 
   // จำลองความคืบหน้าของการวิเคราะห์ภาพจาก 0 ถึง 100 เปอร์เซ็นต์
-  const startAnalysis = () => {
+  const startAnalysis = (uploadedFile: UploadedFilePreview) => {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
     setProgress(0);
@@ -165,13 +198,19 @@ export function MRIUpload() {
     // Simulate AI analysis progress
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        const nextProgress = prev + 10;
+
+        if (nextProgress >= 100) {
           clearInterval(interval);
           setIsAnalyzing(false);
+          setSelectedImage(uploadedFile.imageUrl);
+          setUploadedFileName(uploadedFile.fileName);
+          setUploadedFileSize(uploadedFile.fileSize);
           setAnalysisComplete(true);
           return 100;
         }
-        return prev + 10;
+
+        return nextProgress;
       });
     }, 300);
   };
@@ -267,10 +306,10 @@ export function MRIUpload() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-          MRI Assessment
+          {t('mri.title')}
         </h1>
         <p className="text-muted-foreground text-base font-medium">
-          อัปโหลด MRI เพื่อการประเมินมะเร็งกระเพาะปัสสาวะเบื้องต้น และรับคำปรึกษาจาก AI Assistant
+          {t('mri.subtitle')}
         </p>
       </div>
 
@@ -294,16 +333,16 @@ export function MRIUpload() {
               <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-primary to-emerald-500 rounded-3xl flex items-center justify-center shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform">
                 <Upload className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-3">Upload MRI Image</h3>
+              <h3 className="text-2xl font-bold mb-3">{t('mri.uploadTitle')}</h3>
               <p className="text-sm text-muted-foreground mb-6 font-medium">
-                Drag and drop or click to browse
+                {t('mri.uploadHint')}
               </p>
               <button
                 type="button"
                 onClick={() => document.getElementById('file-upload')?.click()}
                 className="px-8 py-3.5 bg-gradient-to-r from-primary to-emerald-500 text-white rounded-xl hover:shadow-lg hover:shadow-primary/40 transition-all duration-200 font-semibold"
               >
-                Select File
+                {t('mri.selectFile')}
               </button>
             </label>
           </div>
@@ -317,7 +356,7 @@ export function MRIUpload() {
             >
               <div className="flex items-center gap-3 mb-5">
                 <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                <span className="font-bold text-lg">AI Analysis in Progress...</span>
+                <span className="font-bold text-lg">{t('mri.progressTitle')}</span>
               </div>
               <div className="bg-muted rounded-full h-4 overflow-hidden">
                 <motion.div
@@ -327,18 +366,29 @@ export function MRIUpload() {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <p className="text-sm text-muted-foreground mt-3 font-semibold">{progress}% Complete</p>
+              <p className="text-sm text-muted-foreground mt-3 font-semibold">{progress}% {t('mri.complete')}</p>
             </motion.div>
           )}
 
           {/* Image Preview Section */}
-          {(selectedImage || analysisComplete) && (
+          {selectedImage && (
             <div className="bg-card rounded-2xl shadow-lg border-2 border-border overflow-hidden">
               <div className="p-6 border-b-2 border-border bg-gradient-to-r from-accent/50 to-transparent">
-                <h3 className="text-xl font-bold">MRI Image Preview</h3>
+                <h3 className="text-xl font-bold">{t('mri.previewTitle')}</h3>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-4 bg-accent/40 rounded-xl border border-border px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-muted-foreground">{t('mri.fileName')}</p>
+                      <p className="truncate font-semibold">{uploadedFileName}</p>
+                    </div>
+                    <div className="text-right whitespace-nowrap">
+                      <p className="text-xs font-semibold text-muted-foreground">{t('mri.fileSize')}</p>
+                      <p className="font-semibold">{formatFileSize(uploadedFileSize)}</p>
+                    </div>
+                  </div>
+
                   {/* Drawing Tools - Only for doctors */}
                   {user?.role === 'doctor' && (
                     <div className="flex items-center gap-3 bg-gradient-to-r from-accent/50 to-accent/30 rounded-xl p-4 border-2 border-border">
@@ -352,7 +402,7 @@ export function MRIUpload() {
                           }`}
                         >
                           <Pen className="w-4 h-4" />
-                          ปากกา
+                          {t('mri.pen')}
                         </button>
                         <button
                           onClick={() => changeTool('eraser')}
@@ -363,26 +413,26 @@ export function MRIUpload() {
                           }`}
                         >
                           <Eraser className="w-4 h-4" />
-                          ยางลบ
+                          {t('mri.eraser')}
                         </button>
                         <button
                           onClick={clearCanvas}
                           className="flex items-center gap-2 px-4 py-2.5 bg-card hover:bg-red-50 hover:text-red-600 rounded-lg font-semibold transition-all"
                         >
                           <RotateCcw className="w-4 h-4" />
-                          ล้างทั้งหมด
+                          {t('mri.clearAll')}
                         </button>
                       </div>
                       <div className="flex-1" />
                       <div className="text-sm font-semibold text-muted-foreground">
-                        {drawingTool === 'pen' ? '🖊️ วาดบนภาพเพื่อระบุตำแหน่ง' : '🧹 ลบรอยวาด'}
+                        {drawingTool === 'pen' ? `🖊️ ${t('mri.drawHint')}` : `🧹 ${t('mri.eraseHint')}`}
                       </div>
                     </div>
                   )}
                   
                   <div className="relative aspect-square bg-black rounded-2xl overflow-hidden shadow-xl">
                     <img
-                      src={selectedImage || mockImageUrl}
+                      src={selectedImage}
                       alt="MRI Scan"
                       className="w-full h-full object-cover"
                     />
@@ -614,7 +664,7 @@ export function MRIUpload() {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg">AI Assistant</h3>
-                  <p className="text-xs text-muted-foreground font-medium">ถามคำถามเกี่ยวกับการรักษา</p>
+                  <p className="text-xs text-muted-foreground font-medium">{t('mri.aiAssistantSubtitle')}</p>
                 </div>
               </div>
             </div>
@@ -662,7 +712,7 @@ export function MRIUpload() {
                         <p className="whitespace-pre-line leading-relaxed font-medium">{message.content}</p>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1 px-1 font-medium">
-                        {message.timestamp.toLocaleTimeString('th-TH', {
+                        {formatTime(message.timestamp, {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}

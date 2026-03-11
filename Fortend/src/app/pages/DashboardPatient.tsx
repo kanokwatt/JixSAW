@@ -1,16 +1,24 @@
 import { MessageCircle, Calendar, FileText, Activity, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router';
 import { useUser } from '../context/UserContext';
+import { useAppSettings } from '../context/AppSettingsContext';
 
 // Dashboard สำหรับผู้ป่วย เน้นการนัดหมาย ทางลัดใช้งาน และผลประเมินล่าสุด
 export function DashboardPatient() {
   const { user } = useUser();
+  const { t, locale, formatDate } = useAppSettings();
   
   // Mock data - วันนัดหมายถัดไป
   const nextAppointment = new Date('2026-03-05');
   const today = new Date();
-  // คำนวณจำนวนวันที่เหลือก่อนถึงวันนัดหมายถัดไป
-  const daysUntilAppointment = Math.ceil((nextAppointment.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  // ปรับเวลาให้เป็นเที่ยงคืนเพื่อเปรียบเทียบแบบรายวันและลดปัญหาเศษชั่วโมง
+  nextAppointment.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  // คำนวณส่วนต่างของวัน: ค่าบวกคือยังไม่ถึงวันนัด, ค่าลบคือเกินกำหนดแล้ว
+  const appointmentDayDifference = Math.round((nextAppointment.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  // ถ้าวันนัดเลยมาแล้ว ให้แสดงจำนวนวันที่เกินกำหนดเป็นค่าบวกเสมอ
+  const isAppointmentOverdue = appointmentDayDifference < 0;
+  const appointmentDisplayDays = Math.abs(appointmentDayDifference);
 
   // ข้อมูลผลประเมินล่าสุดของผู้ป่วย
   const recentAssessments = [
@@ -18,6 +26,14 @@ export function DashboardPatient() {
     { date: '2026-01-15', result: 'Medium Risk', aiConfidence: 78, doctorReviewed: true },
     { date: '2025-12-10', result: 'Low Risk', aiConfidence: 88, doctorReviewed: true },
   ];
+
+  const getRiskLabel = (risk: string) => {
+    if (locale === 'en') return risk;
+    if (risk === 'Low Risk') return 'ความเสี่ยงต่ำ';
+    if (risk === 'Medium Risk') return 'ความเสี่ยงปานกลาง';
+    if (risk === 'High Risk') return 'ความเสี่ยงสูง';
+    return risk;
+  };
 
   return (
     <div className="p-8 space-y-8 max-w-[1920px] mx-auto">
@@ -27,11 +43,13 @@ export function DashboardPatient() {
           <div className="flex items-center gap-3">
             <Calendar className="w-8 h-8 text-red-600" />
             <div>
-              <p className="text-xs font-semibold text-red-600">วันนัดหมายถัดไป</p>
-              <p className="text-2xl font-bold text-red-700">
-                {daysUntilAppointment} วัน
+              <p className="text-xs font-semibold text-red-600">
+                {isAppointmentOverdue ? t('dashboardPatient.overdue') : t('dashboardPatient.nextAppointment')}
               </p>
-              <p className="text-xs text-red-600 font-medium">{nextAppointment.toLocaleDateString('th-TH')}</p>
+              <p className="text-2xl font-bold text-red-700">
+                {appointmentDisplayDays} {t('dashboardPatient.days')}
+              </p>
+              <p className="text-xs text-red-600 font-medium">{formatDate(nextAppointment)}</p>
             </div>
           </div>
         </div>
@@ -40,10 +58,10 @@ export function DashboardPatient() {
       {/* Header */}
       <div>
         <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-          สวัสดี, คุณ{user?.firstName}
+          {t('dashboardPatient.greeting')}{user?.firstName}
         </h1>
         <p className="text-muted-foreground text-base font-medium">
-          แพลตฟอร์มติดตามสุขภาพและให้คำปรึกษาเกี่ยวกับมะเร็งกระเพาะปัสสาวะ
+          {t('dashboardPatient.subtitle')}
         </p>
       </div>
 
@@ -54,8 +72,8 @@ export function DashboardPatient() {
           className="bg-gradient-to-br from-primary to-emerald-500 rounded-2xl p-8 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group text-white"
         >
           <MessageCircle className="w-12 h-12 mb-4" />
-          <h3 className="text-2xl font-bold mb-2">MRI Assessment & AI Chat</h3>
-          <p className="text-white/90 font-medium">อัปโหลด MRI และปรึกษา AI Assistant</p>
+          <h3 className="text-2xl font-bold mb-2">{t('dashboardPatient.quickActionTitle')}</h3>
+          <p className="text-white/90 font-medium">{t('dashboardPatient.quickActionDesc')}</p>
         </Link>
 
         <Link
@@ -63,8 +81,8 @@ export function DashboardPatient() {
           className="bg-card rounded-2xl p-8 shadow-lg border-2 border-border hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
         >
           <FileText className="w-12 h-12 mb-4 text-purple-600" />
-          <h3 className="text-2xl font-bold mb-2">ประวัติการรักษา</h3>
-          <p className="text-muted-foreground font-medium">ดูประวัติและผลการประเมินของแพทย์</p>
+          <h3 className="text-2xl font-bold mb-2">{t('dashboardPatient.historyTitle')}</h3>
+          <p className="text-muted-foreground font-medium">{t('dashboardPatient.historyDesc')}</p>
         </Link>
       </div>
 
@@ -73,11 +91,8 @@ export function DashboardPatient() {
         <div className="flex gap-4">
           <AlertCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-bold text-blue-900 mb-2 text-base">สำคัญ: AI ให้ข้อมูลเบื้องต้นเท่านั้น</h4>
-            <p className="text-sm text-blue-800 font-medium leading-relaxed">
-              ผลการประเมินจาก AI เป็นเพียงข้อมูลเบื้องต้น การวินิจฉัยและการรักษาที่แท้จริงต้องได้รับการยืนยันจากแพทย์ผู้เชี่ยวชาญเท่านั้น 
-              กรุณาปรึกษาแพทย์ของคุณเพื่อการดูแลที่เหมาะสม
-            </p>
+            <h4 className="font-bold text-blue-900 mb-2 text-base">{t('dashboardPatient.bannerTitle')}</h4>
+            <p className="text-sm text-blue-800 font-medium leading-relaxed">{t('dashboardPatient.bannerDesc')}</p>
           </div>
         </div>
       </div>
@@ -85,8 +100,8 @@ export function DashboardPatient() {
       {/* Recent Assessments */}
       <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
         <div className="p-6 border-b border-border bg-gradient-to-r from-accent/50 to-transparent">
-          <h2 className="text-2xl font-bold">การประเมินล่าสุด</h2>
-          <p className="text-sm text-muted-foreground mt-1">ผลการประเมิน AI และการตรวจสอบจากแพทย์</p>
+          <h2 className="text-2xl font-bold">{t('dashboardPatient.recentTitle')}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{t('dashboardPatient.recentDesc')}</p>
         </div>
         <div className="p-6">
           <div className="space-y-4">
@@ -101,8 +116,8 @@ export function DashboardPatient() {
                     {index + 1}
                   </div>
                   <div>
-                    <p className="font-bold text-base">{new Date(assessment.date).toLocaleDateString('th-TH')}</p>
-                    <p className="text-sm text-muted-foreground font-medium">AI Confidence: {assessment.aiConfidence}%</p>
+                    <p className="font-bold text-base">{formatDate(assessment.date)}</p>
+                    <p className="text-sm text-muted-foreground font-medium">{t('dashboardPatient.aiConfidence')}: {assessment.aiConfidence}%</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -114,13 +129,13 @@ export function DashboardPatient() {
                         ${assessment.result === 'High Risk' ? 'bg-red-100 text-red-700 ring-1 ring-red-200' : ''}
                       `}
                     >
-                      {assessment.result}
+                      {getRiskLabel(assessment.result)}
                     </span>
                   </div>
                   {assessment.doctorReviewed && (
                     <div className="flex items-center gap-2 text-primary font-semibold text-sm">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      แพทย์ตรวจสอบแล้ว
+                      {t('dashboardPatient.reviewed')}
                     </div>
                   )}
                 </div>

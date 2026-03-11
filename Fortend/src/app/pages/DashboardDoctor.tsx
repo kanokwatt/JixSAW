@@ -1,5 +1,6 @@
 import { Users, FileCheck, Clock, Search, TrendingUp, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router';
+import { useAppSettings } from '../context/AppSettingsContext';
 
 const mockStats = {
   totalPatients: 156,
@@ -17,12 +18,14 @@ const mockRecentCases = [
 
 // Dashboard สำหรับแพทย์ เน้นจำนวนคนไข้ งานที่ต้องรีวิว และรายการเคสที่ต้องตรวจสอบ
 export function DashboardDoctor() {
+  const { t, formatDate } = useAppSettings();
+
   // จัดรูปข้อมูลสถิติให้นำไป map เป็นการ์ดสรุปได้ง่าย
   const stats = [
-    { label: 'Total Patients', value: mockStats.totalPatients, icon: Users, color: 'from-blue-500 to-blue-600' },
-    { label: 'Pending Reviews', value: mockStats.pendingReviews, icon: Clock, color: 'from-orange-500 to-orange-600' },
-    { label: 'Completed Today', value: mockStats.completedToday, icon: FileCheck, color: 'from-emerald-500 to-emerald-600' },
-    { label: 'Avg AI Accuracy', value: `${mockStats.avgAccuracy}%`, icon: TrendingUp, color: 'from-purple-500 to-purple-600' },
+    { label: t('dashboardDoctor.totalPatients'), value: mockStats.totalPatients, icon: Users, color: 'from-blue-500 to-blue-600' },
+    { label: t('dashboardDoctor.pendingReviews'), value: mockStats.pendingReviews, icon: Clock, color: 'from-orange-500 to-orange-600' },
+    { label: t('dashboardDoctor.completedToday'), value: mockStats.completedToday, icon: FileCheck, color: 'from-emerald-500 to-emerald-600' },
+    { label: t('dashboardDoctor.avgAccuracy'), value: `${mockStats.avgAccuracy}%`, icon: TrendingUp, color: 'from-purple-500 to-purple-600' },
   ];
 
   return (
@@ -30,9 +33,9 @@ export function DashboardDoctor() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">Dashboard - แพทย์</h1>
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">{t('dashboardDoctor.title')}</h1>
           <p className="text-muted-foreground text-base font-medium">
-            ภาพรวมการประเมินผู้ป่วยและ AI Analysis
+            {t('dashboardDoctor.subtitle')}
           </p>
         </div>
         <Link
@@ -40,7 +43,7 @@ export function DashboardDoctor() {
           className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-emerald-500 text-white rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all duration-200 font-medium"
         >
           <Search className="w-4 h-4" />
-          <span>ค้นหาเคส</span>
+          <span>{t('dashboardDoctor.searchCases')}</span>
         </Link>
       </div>
 
@@ -70,19 +73,19 @@ export function DashboardDoctor() {
       {/* Recent Cases */}
       <div className="bg-card rounded-2xl shadow-lg border border-border overflow-hidden">
         <div className="p-6 border-b border-border bg-gradient-to-r from-accent/50 to-transparent">
-          <h2 className="text-2xl font-bold">เคสล่าสุดที่ต้องตรวจสอบ</h2>
-          <p className="text-sm text-muted-foreground mt-1">รายการผู้ป่วยที่รอการประเมินจากแพทย์</p>
+          <h2 className="text-2xl font-bold">{t('dashboardDoctor.recentTitle')}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{t('dashboardDoctor.recentDesc')}</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-accent/50 backdrop-blur">
               <tr>
-                <th className="text-left p-4 font-semibold text-sm">Patient ID</th>
-                <th className="text-left p-4 font-semibold text-sm">Patient Name</th>
-                <th className="text-left p-4 font-semibold text-sm">Date</th>
-                <th className="text-left p-4 font-semibold text-sm">Status</th>
-                <th className="text-left p-4 font-semibold text-sm">AI Confidence</th>
-                <th className="text-left p-4 font-semibold text-sm">Action</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.patientId')}</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.patientName')}</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.date')}</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.status')}</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.aiConfidence')}</th>
+                <th className="text-left p-4 font-semibold text-sm">{t('dashboardDoctor.action')}</th>
               </tr>
             </thead>
             <tbody>
@@ -91,7 +94,7 @@ export function DashboardDoctor() {
                   <td className="p-4 font-semibold text-primary">{caseItem.id}</td>
                   <td className="p-4 font-semibold">{caseItem.patientName}</td>
                   <td className="p-4 text-sm font-medium">
-                    {new Date(caseItem.date).toLocaleDateString('th-TH')}
+                    {formatDate(caseItem.date)}
                   </td>
                   <td className="p-4">
                     <span
@@ -122,7 +125,7 @@ export function DashboardDoctor() {
                       to="/case-search"
                       className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-semibold inline-block"
                     >
-                      Review
+                      {t('dashboardDoctor.review')}
                     </Link>
                   </td>
                 </tr>
