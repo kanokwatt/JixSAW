@@ -1,0 +1,126 @@
+
+services:
+  # ฐานข้อมูล MySQL สำหรับเก็บข้อมูลผู้ป่วยและผลตรวจ
+  db_mysql:
+    image: mysql:8.0
+    container_name: jixsaw_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: jixsaw_root_2024
+      MYSQL_DATABASE: jixsaw_health
+      MYSQL_USER: jixsaw_user
+      MYSQL_PASSWORD: jixsaw_pass_2024
+    ports:
+      - "3306:3306"
+    volumes:
+      # เก็บข้อมูลถาวร ไม่หายเมื่อปิด Container
+      - mysql_data:/var/lib/mysql
+      # นำไฟล์ init.sql เข้าไปสร้างตารางอัตโนมัติเมื่อรันครั้งแรก
+      - ./mysql_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - jixsaw-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ujixsaw_user", "-pjixsaw_pass_2024"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # AI Engine สำหรับวิเคราะห์ภาพ MRI ด้วย PyTorch
+  ai-engine:
+    build:
+      context: ./ai_engine
+      dockerfile: Dockerfile
+    container_name: jixsaw_ai_engine
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MODEL_PATH=/app/models
+      - TORCH_HOME=/app/torch_cache
+    volumes:
+      # Mount โมเดล AI และ cache
+      - ./ai_engine:/app
+      - ai_models:/app/models
+      - torch_cache:/app/torch_cache
+    networks:
+      - jixsaw-net
+    # ใช้ GPU ถ้ามี (ต้องติดตั้ง nvidia-docker)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Backend API สำหรับจัดการข้อมูลและเชื่อมต่อ AI Engine
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: jixsaw_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=mysql+pymysql://jixsaw_user:jixsaw_pass_2024@db_mysql:3306/jixsaw_health
+      - AI_ENGINE_URL=http://ai-engine:5000
+      - SECRET_KEY=jixsaw_secret_key_change_in_production
+      - CORS_ORIGINS=http://localhost:5173,http://frontend:5173
+    volumes:
+      - ./backend:/app
+      # เก็บไฟล์อัปโหลด (เช่น ภาพ MRI)
+      - uploads_data:/app/uploads
+    depends_on:
+      db_mysql:
+        condition: service_healthy
+      ai-engine:
+        condition: service_started
+    networks:
+      - jixsaw-net
+
+  
+  # Frontend React สำหรับหน้าเว็บแพทย์และเจ้าหน้าที่
+  frontend:
+    build:
+      context: ./frontend/Fortend    
+      dockerfile: Dockerfile
+    container_name: jixsaw_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_AI_ENGINE_URL=http://localhost:5000
+    volumes:
+      - ./frontend/Fortend:/app      
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - jixsaw-net
+    stdin_open: true
+    tty: true
+
+# Network สำหรับให้ทุก Service สื่อสารกันได้
+networks:
+  jixsaw-net:
+    driver: bridge
+    name: jixsaw-network
+
+# Volumes สำหรับเก็บข้อมูลถาวร
+volumes:
+  # ข้อมูล MySQL
+  mysql_data:
+    driver: local
+  # โมเดล AI
+  ai_models:
+    driver: local
+  # PyTorch cache
+  torch_cache:
+    driver: local
+  # ไฟล์อัปโหลดจาก Backend
+  uploads_data:
+    driver: local
