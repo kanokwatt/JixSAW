@@ -2,14 +2,17 @@ import { MessageCircle, Calendar, FileText, Activity, AlertCircle } from 'lucide
 import { Link } from 'react-router';
 import { useUser } from '../context/UserContext';
 
+// Dashboard สำหรับผู้ป่วย เน้นการนัดหมาย ทางลัดใช้งาน และผลประเมินล่าสุด
 export function DashboardPatient() {
   const { user } = useUser();
   
   // Mock data - วันนัดหมายถัดไป
   const nextAppointment = new Date('2026-03-05');
   const today = new Date();
+  // คำนวณจำนวนวันที่เหลือก่อนถึงวันนัดหมายถัดไป
   const daysUntilAppointment = Math.ceil((nextAppointment.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
+  // ข้อมูลผลประเมินล่าสุดของผู้ป่วย
   const recentAssessments = [
     { date: '2026-02-20', result: 'Low Risk', aiConfidence: 92, doctorReviewed: true },
     { date: '2026-01-15', result: 'Medium Risk', aiConfidence: 78, doctorReviewed: true },
@@ -88,6 +91,7 @@ export function DashboardPatient() {
         <div className="p-6">
           <div className="space-y-4">
             {recentAssessments.map((assessment, index) => (
+              // แสดงผลประเมินแต่ละครั้งในรูปแบบรายการสรุปอ่านง่าย
               <div
                 key={index}
                 className="flex items-center justify-between p-5 bg-accent/30 rounded-xl border border-border hover:bg-accent/50 transition-colors"

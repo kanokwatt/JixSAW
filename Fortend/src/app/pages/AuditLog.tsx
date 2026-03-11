@@ -1,7 +1,9 @@
 import { FileText, CheckCircle, XCircle, Edit, Download, Filter } from 'lucide-react';
 import { mockAuditLogs } from '../data/mockData';
 
+// หน้า audit log แสดงประวัติการอนุมัติ แก้ไข หรือปฏิเสธผลวินิจฉัยทั้งหมด
 export function AuditLog() {
+  // เลือก icon ให้ตรงกับสถานะของ log แต่ละรายการ
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'approved':
@@ -67,6 +69,7 @@ export function AuditLog() {
             </thead>
             <tbody>
               {mockAuditLogs.map((log) => (
+                // สร้างแถวข้อมูลของ log แต่ละรายการในตาราง
                 <tr key={log.id} className="border-b-2 border-border hover:bg-accent/50 transition-colors">
                   <td className="p-5">
                     <div className="text-sm font-mono font-semibold bg-accent/50 px-3 py-1.5 rounded-lg inline-block">{log.timestamp}</div>

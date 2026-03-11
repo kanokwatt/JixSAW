@@ -15,7 +15,9 @@ const mockRecentCases = [
   { id: 'PT-004', patientName: 'นภา แสงดาว', date: '2026-02-24', status: 'pending', aiConfidence: 78 },
 ];
 
+// Dashboard สำหรับแพทย์ เน้นจำนวนคนไข้ งานที่ต้องรีวิว และรายการเคสที่ต้องตรวจสอบ
 export function DashboardDoctor() {
+  // จัดรูปข้อมูลสถิติให้นำไป map เป็นการ์ดสรุปได้ง่าย
   const stats = [
     { label: 'Total Patients', value: mockStats.totalPatients, icon: Users, color: 'from-blue-500 to-blue-600' },
     { label: 'Pending Reviews', value: mockStats.pendingReviews, icon: Clock, color: 'from-orange-500 to-orange-600' },
@@ -45,6 +47,7 @@ export function DashboardDoctor() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
+          // แยก component icon ของแต่ละการ์ดออกมาใช้โดยตรง
           const Icon = stat.icon;
           return (
             <div
@@ -106,6 +109,7 @@ export function DashboardDoctor() {
                     <div className="flex items-center gap-3">
                       <div className="flex-1 bg-muted rounded-full h-2.5 max-w-[100px] overflow-hidden">
                         <div
+                          // แสดงระดับความมั่นใจของ AI เป็น progress bar
                           className="bg-gradient-to-r from-primary to-emerald-500 h-2.5 rounded-full transition-all duration-500"
                           style={{ width: `${caseItem.aiConfidence}%` }}
                         />

@@ -3,17 +3,20 @@ import { Menu } from 'lucide-react';
 import { Sidebar } from './Sidebar';
 import { useSidebar } from '../context/SidebarContext';
 
+// Layout เป็นโครงหน้าหลักของระบบ ประกอบด้วย sidebar, top bar และพื้นที่แสดงหน้าลูก
 export function Layout() {
   const { toggleSidebar } = useSidebar();
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      {/* แสดงเมนูด้านข้างที่ใช้ร่วมกันทุกหน้าหลังล็อกอิน */}
       <Sidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar with Hamburger */}
         <header className="h-16 bg-card border-b border-border flex items-center px-6 shadow-sm">
           <button
+            // เรียก toggleSidebar เพื่อสลับการเปิดปิดเมนูด้านข้าง
             onClick={toggleSidebar}
             className="p-2.5 hover:bg-accent rounded-xl transition-colors mr-4"
             aria-label="Toggle menu"
@@ -30,6 +33,7 @@ export function Layout() {
           </div>
         </header>
 
+        {/* Outlet คือพื้นที่สำหรับ render หน้าย่อยตาม route ที่เลือก */}
         <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>

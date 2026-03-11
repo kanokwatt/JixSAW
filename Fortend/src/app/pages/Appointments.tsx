@@ -1,6 +1,7 @@
 import { Calendar, Clock, User, Plus, Search } from 'lucide-react';
 import { mockAppointments } from '../data/mockData';
 
+// หน้านัดหมาย ใช้แสดงรายการตรวจหรือ procedure ที่ถูกนัดไว้ในแต่ละวัน
 export function Appointments() {
   return (
     <div className="p-8 space-y-8">
@@ -27,6 +28,7 @@ export function Appointments() {
       {/* Appointments List */}
       <div className="grid gap-5">
         {mockAppointments.map((appointment) => (
+          // แสดงข้อมูลนัดหมายทีละรายการจาก mockAppointments
           <div
             key={appointment.id}
             className="bg-card rounded-2xl p-7 shadow-lg border-2 border-border hover:shadow-xl hover:scale-[1.01] transition-all duration-300 group"

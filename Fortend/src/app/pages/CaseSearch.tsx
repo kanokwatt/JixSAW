@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search, User, Calendar, Activity, AlertCircle, ThumbsUp, ThumbsDown, MessageSquare, Eye, FileText } from 'lucide-react';
 import { Link } from 'react-router';
 
+// ข้อมูลเคสตัวอย่างสำหรับการค้นหาและเปรียบเทียบผลประเมิน
 const mockCases = [
   {
     id: 'PT-001',
@@ -53,10 +54,12 @@ const mockCases = [
   },
 ];
 
+// หน้าค้นหาเคส ใช้ค้นหาผู้ป่วยจากชื่อหรือรหัส พร้อมกรองตามสถานะ
 export function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
+  // กรองรายการตามข้อความค้นหาและสถานะที่ผู้ใช้เลือก
   const filteredCases = mockCases.filter(caseItem => {
     const matchesSearch = caseItem.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          caseItem.id.toLowerCase().includes(searchTerm.toLowerCase());
@@ -81,6 +84,7 @@ export function CaseSearch() {
           <input
             type="text"
             value={searchTerm}
+            // อัปเดตคำค้นหาแบบ realtime
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="ค้นหาด้วยชื่อผู้ป่วยหรือ Patient ID..."
             className="w-full pl-12 pr-4 py-3.5 bg-card border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium shadow-sm"
@@ -88,6 +92,7 @@ export function CaseSearch() {
         </div>
         <select
           value={filterStatus}
+          // เปลี่ยนตัวกรองสถานะของรายการเคส
           onChange={(e) => setFilterStatus(e.target.value)}
           className="px-6 py-3.5 bg-card border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium shadow-sm appearance-none cursor-pointer"
         >

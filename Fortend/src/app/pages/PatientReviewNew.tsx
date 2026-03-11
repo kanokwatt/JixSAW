@@ -58,14 +58,18 @@ const mockScans: MRIScan[] = [
   },
 ];
 
+// หน้ารีวิวผู้ป่วยเวอร์ชันใหม่ ใช้เปรียบเทียบ MRI ระหว่าง 2 ช่วงเวลา
 export function PatientReviewNew() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  // อ่าน patient id จาก query string เพื่อรองรับการเปิดจากหน้าค้นหาเคส
   const patientId = searchParams.get('id') || 'PT-001';
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  // selectedScans เก็บ index ของภาพที่เลือกมาเทียบกันฝั่งซ้ายและขวา
   const [selectedScans, setSelectedScans] = useState<[number, number]>([0, 1]);
 
+  // เลื่อน timeline ภาพ MRI ไปทางซ้ายหรือขวาทีละช่วง
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
       const scrollAmount = 400;
@@ -76,6 +80,7 @@ export function PatientReviewNew() {
     }
   };
 
+  // เลือกสีป้ายสถานะตามสถานะการรักษา
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'รักษาแล้ว':
@@ -91,6 +96,7 @@ export function PatientReviewNew() {
     }
   };
 
+  // เลือกสีข้อความตามระดับความเสี่ยง
   const getRiskColor = (risk: string) => {
     switch (risk) {
       case 'Low Risk':
@@ -110,6 +116,7 @@ export function PatientReviewNew() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
+            // กลับไปหน้าค้นหาเคส
             onClick={() => navigate('/case-search')}
             className="p-2 hover:bg-accent rounded-xl transition-colors"
           >

@@ -12,6 +12,7 @@ interface Message {
   feedbackComment?: string;
 }
 
+// หน้า MRI Assessment รวม 3 งานหลัก: อัปโหลดภาพ, จำลองการวิเคราะห์ AI, และแชตช่วยตอบคำถาม
 export function MRIUpload() {
   const { user } = useUser();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -28,6 +29,7 @@ export function MRIUpload() {
   const [drawingTool, setDrawingTool] = useState<'pen' | 'eraser'>('pen');
 
   // Chatbot state
+  // สร้างข้อความแรกของแชตโดยเปลี่ยนข้อความต้อนรับตามบทบาทของผู้ใช้
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 0,
@@ -56,8 +58,10 @@ export function MRIUpload() {
     'การรักษามะเร็งกระเพาะปัสสาวะมีวิธีไหนบ้าง?',
   ];
 
+  // เลือกคำถามตัวอย่างให้เหมาะกับ doctor หรือ patient
   const suggestedQuestions = user?.role === 'doctor' ? suggestedQuestionsDoctor : suggestedQuestionsPatient;
 
+  // คำตอบตัวอย่างของ AI ใช้จับคู่กับข้อความคำถามแบบง่าย ๆ
   const aiResponses: { [key: string]: string } = {
     'มะเร็งกระเพาะปัสสาวะมีอาการอย่างไร?': 'อาการของมะเร็งกระเพาะปัสสาวะที่พบบ่อย ได้แก่:\n\n1. ปัสสาวะมีเลือดปน (Hematuria) - เป็นอาการที่พบบ่อยที่สุด\n2. ปัสสาวะบ่อยผิดปกติ\n3. เจ็บหรือแสบขณะปัสสาวะ\n4. ปวดบริเวณหลังส่วนล่างหรือท้องน้อย\n5. รู้สึกปัสสาวะไม่สุดเมื่อเข้าห้องน้ำ\n\n⚠️ หากพบอาการเหล่านี้ ควรปรึกษาแพทย์ทันที เพื่อการวินิจฉัยและรักษาที่ถูกต้อง',
     'ควรกินอาหารอะไรดีสำหรับผู้ป่วยมะเร็งกระเพาะปัสสาวะ?': 'แนะนำอาหารสำหรับผู้ป่วยมะเร็งกระเพาะปัสสาวะ:\n\n✅ ควรรับประทาน:\n• ผักและผลไม้สดหลากหลายสี โดยเฉพาะที่มี antioxidants\n• โปรตีนคุณภาพดี เช่น ปลา ไก่ เต้าหู้\n• น้ำสะอาดเพียงพอ 8-10 แก้วต่อวัน\n• ธัญพืชเต็มเมล็ด\n\n❌ ควรหลีกเลี่ยง:\n• อาหารแปรรูป เค็มจัด\n• เนื้อแดงมากเกินไป\n• แอลกอฮอล์และบุหรี่\n• อาหารที่มีสารกันบูด\n\n💡 ควรปรึกษานักโภชนาการเพื่อวางแผนอาหารที่เหมาะกับสภาพร่างกาย',
@@ -71,6 +75,7 @@ export function MRIUpload() {
   const mockImageUrl = 'https://images.unsplash.com/photo-1516549655169-df83a0774514?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtcmklMjBzY2FuJTIwYmxhZGRlcnxlbnwxfHx8fDE3NDA0ODA4Mzl8MA&ixlib=rb-4.1.0&q=80&w=1080';
 
   // Chatbot functions
+  // เลื่อนแชตลงล่างสุดทุกครั้งเมื่อมีข้อความใหม่
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -79,6 +84,7 @@ export function MRIUpload() {
     scrollToBottom();
   }, [messages]);
 
+  // ส่งข้อความของผู้ใช้และจำลองการตอบกลับจาก AI Assistant
   const handleSendMessage = (messageText?: string) => {
     const textToSend = messageText || inputMessage.trim();
     if (!textToSend) return;
@@ -95,6 +101,7 @@ export function MRIUpload() {
     setIsTyping(true);
 
     setTimeout(() => {
+      // ถ้าไม่มีคำตอบที่เตรียมไว้ จะตอบกลับด้วยข้อความกลางแบบแนะนำหัวข้อแทน
       const response = aiResponses[textToSend] || `ขอบคุณสำหรับคำถามครับ สำหรับคำถาม "${textToSend}" ผมแนะนำให้ปรึกษาแพทย์โดยตรงเพื่อข้อมูลที่แม่นยำและเหมาะสมกับสภาวะของคุณครับ\n\n💡 คุณสามารถเลือกคำถามจากตัวอย่างด้านล่าง หรือถามเกี่ยวกับ:\n• อาการและการวินิจฉัย\n• วิธีการรักษา\n• การดูแลตัวเอง\n• คำแนะนำทั่วไป`;
 
       const aiMessage: Message = {
@@ -109,6 +116,7 @@ export function MRIUpload() {
     }, 1500);
   };
 
+  // บันทึก feedback ต่อข้อความของ AI ใน message object เดิม
   const handleFeedback = (messageId: number, feedback: 'good' | 'bad') => {
     setMessages((prev) =>
       prev.map((msg) =>
@@ -117,6 +125,7 @@ export function MRIUpload() {
     );
   };
 
+  // รับไฟล์จาก input แล้วแปลงเป็น Data URL เพื่อแสดง preview และเริ่มวิเคราะห์
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -133,6 +142,7 @@ export function MRIUpload() {
     e.preventDefault();
   };
 
+  // รองรับการลากไฟล์มาวางบนพื้นที่อัปโหลด
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -146,6 +156,7 @@ export function MRIUpload() {
     }
   };
 
+  // จำลองความคืบหน้าของการวิเคราะห์ภาพจาก 0 ถึง 100 เปอร์เซ็นต์
   const startAnalysis = () => {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
@@ -165,6 +176,7 @@ export function MRIUpload() {
     }, 300);
   };
 
+  // ส่งความเห็นแพทย์ต่อผลวิเคราะห์ ในเวอร์ชันนี้ยังแสดงผลผ่าน alert เท่านั้น
   const handleSubmitFeedback = () => {
     if (!doctorOpinion) {
       alert('กรุณาเลือกความเห็นของแพทย์');
@@ -174,6 +186,7 @@ export function MRIUpload() {
   };
 
   // Canvas drawing functions
+  // ตั้งค่าพื้นฐานของ canvas หลังวิเคราะห์เสร็จ เพื่อให้เริ่มวาดทับภาพได้
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas && analysisComplete) {
@@ -185,6 +198,7 @@ export function MRIUpload() {
     }
   }, [analysisComplete]);
 
+  // เริ่มวาดเส้นจากตำแหน่งเมาส์ปัจจุบัน
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -201,6 +215,7 @@ export function MRIUpload() {
     }
   };
 
+  // วาดหรือยางลบตาม tool ที่เลือกไว้
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     
@@ -226,14 +241,17 @@ export function MRIUpload() {
     }
   };
 
+  // หยุดการวาดเมื่อปล่อยเมาส์
   const stopDrawing = () => {
     setIsDrawing(false);
   };
 
+  // เปลี่ยนเครื่องมือระหว่างปากกาและยางลบ
   const changeTool = (tool: 'pen' | 'eraser') => {
     setDrawingTool(tool);
   };
 
+  // ล้าง annotation ทั้งหมดบน canvas
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;

@@ -9,6 +9,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { NotFound } from './pages/NotFound';
 
+// กำหนดเส้นทางทั้งหมดของแอป และระบุว่าแต่ละ path จะ render หน้าใด
 export const router = createBrowserRouter([
   {
     path: '/login',

@@ -4,25 +4,30 @@ import { useUser } from '../context/UserContext';
 import { useSidebar } from '../context/SidebarContext';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Sidebar แสดงเมนูนำทางตามบทบาทของผู้ใช้ และควบคุมการออกจากระบบ
 export function Sidebar() {
   const location = useLocation();
   const { user, logout } = useUser();
   const { isOpen, closeSidebar } = useSidebar();
 
+  // เมนูสำหรับแพทย์
   const navItemsDoctor = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
     { path: '/case-search', label: 'ค้นหาเคส', icon: Search },
   ];
 
+  // เมนูสำหรับผู้ป่วย
   const navItemsPatient = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/mri-upload', label: 'MRI Assessment', icon: Activity },
     { path: '/patient-history', label: 'ประวัติการรักษา', icon: History },
   ];
 
+  // เลือกชุดเมนูตาม role ปัจจุบัน
   const navItems = user?.role === 'doctor' ? navItemsDoctor : navItemsPatient;
 
+  // เมื่อกดเมนูใน sidebar ให้ปิดเมนูเพื่อคืนพื้นที่หน้าจอบน mobile
   const handleNavClick = () => {
     closeSidebar();
   };
@@ -65,6 +70,7 @@ export function Sidebar() {
                   </div>
                 </div>
                 <button
+                  // ปิด sidebar เมื่อกดปุ่มกากบาท
                   onClick={closeSidebar}
                   className="p-2 hover:bg-accent rounded-lg transition-colors"
                   aria-label="Close menu"
@@ -85,6 +91,7 @@ export function Sidebar() {
                     <li key={item.path}>
                       <Link
                         to={item.path}
+                        // เลือกหน้าใหม่แล้วปิด sidebar ทันที
                         onClick={handleNavClick}
                         className={`
                           flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 font-medium
@@ -117,6 +124,7 @@ export function Sidebar() {
               <Link
                 to="/login"
                 onClick={() => {
+                  // ล้าง user session และปิด sidebar ก่อนกลับไปหน้า login
                   logout();
                   closeSidebar();
                 }}

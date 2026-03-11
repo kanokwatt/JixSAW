@@ -33,6 +33,7 @@ export interface AuditLogData {
   status: 'approved' | 'rejected' | 'modified';
 }
 
+// ข้อมูลเคสตัวอย่าง ใช้แทน response จาก API สำหรับหน้า dashboard และหน้าค้นหาเคส
 export const mockCases: CaseData[] = [
   {
     id: 'CS-2026-001',
@@ -73,6 +74,7 @@ export const mockCases: CaseData[] = [
   }
 ];
 
+// ข้อมูลนัดหมายตัวอย่าง ใช้แสดงผลในหน้าตารางการนัดหมาย
 export const mockAppointments: AppointmentData[] = [
   {
     id: 'APT-001',
@@ -131,6 +133,7 @@ export const mockAppointments: AppointmentData[] = [
   }
 ];
 
+// ข้อมูล audit log ตัวอย่าง ใช้จำลองประวัติการตรวจสอบและการอนุมัติของแพทย์
 export const mockAuditLogs: AuditLogData[] = [
   {
     id: 'LOG-001',
@@ -179,6 +182,7 @@ export const mockAuditLogs: AuditLogData[] = [
   }
 ];
 
+// ค่าสรุปสถิติสำหรับ dashboard หลัก
 export const dashboardStats = {
   todayCases: 4,
   pendingReview: 2,

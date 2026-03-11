@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { AlertCircle } from 'lucide-react';
 
+// หน้า fallback เมื่อผู้ใช้เปิด path ที่ไม่มีในระบบ
 export function NotFound() {
   return (
     <div className="flex items-center justify-center min-h-screen p-8">
@@ -10,6 +11,7 @@ export function NotFound() {
         <p className="text-xl text-muted-foreground mb-6">Page Not Found</p>
         <Link
           to="/"
+          // ส่งผู้ใช้กลับไปหน้า dashboard หลัก
           className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           Return to Dashboard

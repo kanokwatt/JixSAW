@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Upload, CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
+// หน้า AIAnalysis เป็นตัวอย่าง flow อัปโหลดภาพ cystoscopy และรับผลวิเคราะห์แบบ mock
 export function AIAnalysis() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -12,6 +13,7 @@ export function AIAnalysis() {
   // Mock cystoscopy image
   const mockImageUrl = 'https://images.unsplash.com/photo-1766310550061-7cd0900f7c76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwY3lzdG9zY29weSUyMGVuZG9zY29weSUyMGJsYWRkZXJ8ZW58MXx8fHwxNzcyMDQwMzA4fDA&ixlib=rb-4.1.0&q=80&w=1080';
 
+  // รับไฟล์จาก input แล้วเริ่มกระบวนการวิเคราะห์จำลอง
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -28,6 +30,7 @@ export function AIAnalysis() {
     e.preventDefault();
   };
 
+  // รองรับ drag and drop image ลงในพื้นที่อัปโหลด
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
@@ -41,6 +44,7 @@ export function AIAnalysis() {
     }
   };
 
+  // จำลอง progress ของ AI analysis จนเสร็จสมบูรณ์
   const startAnalysis = () => {
     setIsAnalyzing(true);
     setAnalysisComplete(false);
@@ -60,10 +64,12 @@ export function AIAnalysis() {
     }, 300);
   };
 
+  // ปุ่ม approve ใช้แทนการบันทึกผลวินิจฉัยในระบบจริง
   const handleApprove = () => {
     alert('Diagnosis approved! This would be saved to the system.');
   };
 
+  // ปุ่ม reject ใช้แทนการส่งต่อเพื่อ manual review
   const handleReject = () => {
     alert('Diagnosis rejected. Manual review required.');
   };

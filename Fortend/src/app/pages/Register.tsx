@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { Activity, User, Mail, Globe, Stethoscope, Heart } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
+// หน้าลงทะเบียน สร้างข้อมูลผู้ใช้และเก็บไว้ใน context โดยยังไม่เรียก backend จริง
 export function Register() {
   const navigate = useNavigate();
   const { setUser } = useUser();
@@ -14,11 +15,13 @@ export function Register() {
     country: ''
   });
 
+  // รายชื่อประเทศตัวอย่างสำหรับ dropdown ในฟอร์ม
   const countries = [
     'Thailand', 'United States', 'United Kingdom', 'Japan', 'Singapore',
     'Malaysia', 'Indonesia', 'Vietnam', 'Philippines', 'Australia'
   ];
 
+  // จัดการตอนผู้ใช้กด submit ฟอร์มลงทะเบียน
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.role) {
@@ -26,6 +29,7 @@ export function Register() {
       return;
     }
     
+    // เก็บข้อมูลที่กรอกไว้ลง context เพื่อจำลองการมี session หลังสมัครสำเร็จ
     setUser({
       firstName: formData.firstName,
       lastName: formData.lastName,
@@ -70,6 +74,7 @@ export function Register() {
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     type="button"
+                    // เลือกบทบาทเป็น doctor และอัปเดตข้อมูลใน form state
                     onClick={() => setFormData({ ...formData, role: 'doctor' })}
                     className={`p-6 rounded-2xl border-2 transition-all duration-200 ${
                       formData.role === 'doctor'
@@ -86,6 +91,7 @@ export function Register() {
                   
                   <button
                     type="button"
+                    // เลือกบทบาทเป็น patient และอัปเดตข้อมูลใน form state
                     onClick={() => setFormData({ ...formData, role: 'patient' })}
                     className={`p-6 rounded-2xl border-2 transition-all duration-200 ${
                       formData.role === 'patient'
@@ -114,6 +120,7 @@ export function Register() {
                       id="firstName"
                       type="text"
                       value={formData.firstName}
+                      // อัปเดตชื่อจริงใน state ของฟอร์ม
                       onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                       placeholder="ชื่อ"
                       required
@@ -130,6 +137,7 @@ export function Register() {
                     id="lastName"
                     type="text"
                     value={formData.lastName}
+                    // อัปเดตนามสกุลใน state ของฟอร์ม
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     placeholder="นามสกุล"
                     required
@@ -149,6 +157,7 @@ export function Register() {
                     id="email"
                     type="email"
                     value={formData.email}
+                    // อัปเดตอีเมลใน state ของฟอร์ม
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="your.email@example.com"
                     required
@@ -167,6 +176,7 @@ export function Register() {
                   <select
                     id="country"
                     value={formData.country}
+                    // อัปเดตประเทศที่เลือกใน state ของฟอร์ม
                     onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                     required
                     className="w-full pl-12 pr-4 py-3.5 bg-accent/50 border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium appearance-none cursor-pointer"

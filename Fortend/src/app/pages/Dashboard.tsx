@@ -2,7 +2,9 @@ import { Users, FileCheck, Clock, TrendingUp, Plus, Upload, ArrowUpRight } from 
 import { dashboardStats, mockCases } from '../data/mockData';
 import { Link } from 'react-router';
 
+// หน้า dashboard สรุปตัวเลขสำคัญและรายการเคสล่าสุดจาก mock data
 export function Dashboard() {
+  // แปลงข้อมูลสถิติให้อยู่ในรูปแบบที่ map ไปแสดงผลบนการ์ดได้ง่าย
   const stats = [
     {
       label: "Today's Cases",
@@ -61,7 +63,9 @@ export function Dashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
+          // ดึง component icon ของแต่ละการ์ดออกมาใช้งาน
           const Icon = stat.icon;
+          // สีพื้นหลังของการ์ดถูกเลือกตามตำแหน่งของข้อมูลใน array
           const gradients = [
             'from-blue-500 to-blue-600',
             'from-orange-500 to-orange-600',
@@ -136,6 +140,7 @@ export function Dashboard() {
                       <div className="flex items-center gap-3">
                         <div className="flex-1 bg-muted rounded-full h-2.5 max-w-[100px] overflow-hidden">
                           <div
+                            // ความกว้างของแถบ progress ถูกคำนวณจากค่า aiConfidence เป็นเปอร์เซ็นต์
                             className="bg-gradient-to-r from-primary to-emerald-500 h-2.5 rounded-full transition-all duration-500"
                             style={{ width: `${caseItem.aiConfidence}%` }}
                           />

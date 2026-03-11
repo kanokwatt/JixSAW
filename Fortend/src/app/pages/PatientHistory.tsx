@@ -1,6 +1,7 @@
 import { FileText, Calendar, Activity, CheckCircle, AlertCircle, User } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
+// mockHistory คือประวัติการประเมินของผู้ป่วยแต่ละครั้ง พร้อมความเห็นแพทย์
 const mockHistory = [
   {
     id: 1,
@@ -46,6 +47,7 @@ const mockHistory = [
   },
 ];
 
+// หน้าประวัติการรักษา แสดง timeline ของผลประเมิน AI และการทบทวนโดยแพทย์
 export function PatientHistory() {
   const { user } = useUser();
 
@@ -75,6 +77,7 @@ export function PatientHistory() {
       {/* History Timeline */}
       <div className="space-y-6">
         {mockHistory.map((record, index) => (
+          // วนแสดงแต่ละรายการประวัติเป็นการ์ดแยกตามลำดับเวลา
           <div
             key={record.id}
             className="bg-card rounded-2xl shadow-lg border-2 border-border overflow-hidden hover:shadow-xl transition-all duration-300"
@@ -126,6 +129,7 @@ export function PatientHistory() {
                     <div className="flex items-center gap-3">
                       <div className="flex-1 bg-muted rounded-full h-3 overflow-hidden">
                         <div
+                          // ความกว้างของ progress bar แสดงตามค่า aiConfidence
                           className="bg-gradient-to-r from-primary to-emerald-500 h-3 rounded-full"
                           style={{ width: `${record.aiConfidence}%` }}
                         />

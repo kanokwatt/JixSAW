@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router';
 import { Activity, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
+// หน้าเข้าสู่ระบบ ใช้ mock flow แทนการเรียก API จริงในเวอร์ชันปัจจุบัน
 export function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser();
@@ -11,6 +12,7 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // จัดการตอนผู้ใช้ submit ฟอร์ม login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -20,6 +22,7 @@ export function Login() {
       // สมมติว่าเป็นแพทย์ถ้า email มี "doctor" หรือ "dr"
       const isDoctor = email.toLowerCase().includes('doctor') || email.toLowerCase().includes('dr');
       
+      // บันทึกข้อมูลผู้ใช้ลง context เพื่อให้ทั้งแอปเรียกใช้ต่อได้
       setUser({
         firstName: isDoctor ? 'Siriwan' : 'สมชาย',
         lastName: isDoctor ? 'Prateep' : 'ใจดี',
@@ -29,6 +32,7 @@ export function Login() {
       });
 
       setIsLoading(false);
+      // หลัง login สำเร็จให้พาไปหน้าแรกของระบบ
       navigate('/');
     }, 1000);
   };
@@ -68,6 +72,7 @@ export function Login() {
                     id="email"
                     type="email"
                     value={email}
+                    // อัปเดต state ทุกครั้งที่ผู้ใช้พิมพ์อีเมล
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="doctor@jixsaw.health or patient@example.com"
                     required
@@ -90,6 +95,7 @@ export function Login() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
+                    // เก็บค่ารหัสผ่านที่ผู้ใช้กรอกไว้ใน state
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
@@ -97,6 +103,7 @@ export function Login() {
                   />
                   <button
                     type="button"
+                    // สลับโหมดแสดงหรือซ่อนรหัสผ่าน
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
